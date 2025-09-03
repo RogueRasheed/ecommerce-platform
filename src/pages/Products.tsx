@@ -1,13 +1,13 @@
-import { products } from "../utils/products";
+import { products } from "../store/products";
 import { useCart } from "../store/useCart"; 
 import { ShoppingCart } from "lucide-react";
-import { useSearch } from "../utils/SearchContext";  // ⬅️ import search context
+import  useSearch  from "../utils/SearchHook";
+import { Link } from "react-router-dom";   // ✅ import Link
 
-export default function ProductsPage() {
+export default function Products() {
   const { addToCart } = useCart();
-  const { searchQuery } = useSearch(); // ⬅️ grab search query from context
+  const { searchQuery } = useSearch();
 
-  // Filter products by search
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -30,16 +30,26 @@ export default function ProductsPage() {
                 key={product.id}
                 className="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden flex flex-col"
               >
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-56 object-cover"
-                />
+                {/* ✅ Make image + name clickable */}
+                <Link to={`/products/${product.id}`}>
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-56 object-cover"
+                  />
+                </Link>
+
                 <div className="p-6 flex-1 flex flex-col">
-                  <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
+                  <Link to={`/products/${product.id}`}>
+                    <h3 className="text-lg font-semibold mb-2 hover:text-indigo-600 transition">
+                      {product.name}
+                    </h3>
+                  </Link>
+
                   <p className="text-gray-600 text-sm flex-1 mb-4">
                     {product.description}
                   </p>
+
                   <div className="flex items-center justify-between">
                     <span className="text-indigo-600 font-bold text-lg">
                       ${product.price}

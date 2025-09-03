@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type OrderItem = {
   id: number;
@@ -12,10 +13,12 @@ type Order = {
   items: OrderItem[];
   total: number;
   date: string;
+  status: "Processing" | "Shipped" | "Delivered" | "Failed";
 };
 
 export default function OrderHistory() {
   const [orders, setOrders] = useState<Order[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const savedOrders = localStorage.getItem("orders");
@@ -75,10 +78,19 @@ export default function OrderHistory() {
               ))}
             </ul>
 
-            {/* Total */}
-            <div className="mt-4 flex justify-between font-semibold text-gray-800">
-              <span>Total</span>
-              <span>${order.total.toFixed(2)}</span>
+            {/* Total + Track button */}
+            <div className="mt-4 flex justify-between items-center">
+              <span className="font-semibold text-gray-800">
+                Total: ${order.total.toFixed(2)}
+              </span>
+              <button
+                onClick={() =>
+                 navigate(`/order/${order.id}/${order.status.toLowerCase()}`)
+                }
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+              >
+                Track Order
+              </button>
             </div>
           </div>
         ))}

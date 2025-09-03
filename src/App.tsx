@@ -8,6 +8,8 @@ import Contact from "./pages/Contact";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrderConfirmation from "./components/OrderConfirmation";
 import OrderHistory from "./pages/OrderHistory";
+import ProductDetails from "./pages/ProductDetails";
+import OrderStatus from "./pages/OrderStatus";
 
 export default function App() {
   return (
@@ -21,6 +23,8 @@ export default function App() {
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/order-confirmation" element={<OrderConfirmation />} />
         <Route path="/order-history" element={<OrderHistory />} />
+        <Route path="/products/:id" element={<ProductDetails />} />
+        <Route path="/order/:id/status" element={<OrderStatus />} />
       </Route>
     </Routes>
   );

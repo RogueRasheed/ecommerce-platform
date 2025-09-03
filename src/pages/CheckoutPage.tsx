@@ -37,13 +37,14 @@ const handlePlaceOrder = (e: React.FormEvent) => {
 
   setTimeout(() => {
     const order = {
-      id: Date.now(), // more reliable than random
+      id: Date.now().toString(), // unique order ID
       items: cart,
       total,
       date: new Date().toLocaleString(),
+      status: "processing", // 🔑 start with processing
     };
 
-    // ✅ Save latest order (for confirmation page)
+    // ✅ Save latest order
     localStorage.setItem("lastOrder", JSON.stringify(order));
 
     // ✅ Append to order history
@@ -51,13 +52,13 @@ const handlePlaceOrder = (e: React.FormEvent) => {
     const updatedOrders = [...existingOrders, order];
     localStorage.setItem("orders", JSON.stringify(updatedOrders));
 
-    // ✅ Clear cart AFTER saving order
+    // ✅ Clear cart
     clearCart();
 
     setLoading(false);
 
-    // ✅ Use navigate instead of window.location.href
-    navigate("/order-confirmation");
+    // ✅ Navigate to order tracking page
+    navigate(`/order/${order.id}/status`);
   }, 1500);
 };
 

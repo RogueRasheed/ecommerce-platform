@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { products } from "../utils/products";
+import { products } from "../store/products";
 import { useCart } from "../store/useCart"; // ✅ import Zustand cart store
 
 export default function FeaturedProducts() {
@@ -18,7 +18,8 @@ export default function FeaturedProducts() {
 
         <div className="grid gap-8 md:grid-cols-3 mb-12">
           {featured.map((product) => (
-            <div
+            <Link
+              to={`/products/${product.id}`}
               key={product.id}
               className="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden"
             >
@@ -44,7 +45,7 @@ export default function FeaturedProducts() {
                   Add to Cart
                 </button>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 
