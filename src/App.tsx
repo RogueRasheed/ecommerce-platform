@@ -10,6 +10,7 @@ import OrderConfirmation from "./components/OrderConfirmation";
 import OrderHistory from "./pages/OrderHistory";
 import ProductDetails from "./pages/ProductDetails";
 import OrderStatus from "./pages/OrderStatus";
+import AdminOrders from "./admin/AdminOrders";
 
 export default function App() {
   return (
@@ -25,6 +26,8 @@ export default function App() {
         <Route path="/order-history" element={<OrderHistory />} />
         <Route path="/products/:id" element={<ProductDetails />} />
         <Route path="/order/:id/status" element={<OrderStatus />} />
+
+        <Route path="/adminorder" element={<AdminOrders />} />
       </Route>
     </Routes>
   );

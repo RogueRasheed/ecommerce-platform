@@ -1,19 +1,10 @@
-import express, { Request, Response } from 'express';
-import mongoose from 'mongoose';
-import Order from './models/Order';
+import { Router, Request, Response } from 'express';
+import Order from '../models/Order';
 
-const app = express();
-const port = 3000;
+const router = Router();
 
-app.use(express.json());
-
-// Connect to MongoDB
-mongoose.connect('mongodb://127.0.0.1:27017/ecommerce')
-  .then(() => console.log('✅ MongoDB connected'))
-  .catch(err => console.error('❌ MongoDB error:', err));
-
-// Routes
-app.post('/api/orders', async (req: Request, res: Response) => {
+// Create order
+router.post('/', async (req: Request, res: Response) => {
   try {
     const order = new Order(req.body);
     await order.save();
@@ -23,12 +14,14 @@ app.post('/api/orders', async (req: Request, res: Response) => {
   }
 });
 
-app.get('/api/orders', async (_req: Request, res: Response) => {
+// Get all orders
+router.get('/', async (_req: Request, res: Response) => {
   const orders = await Order.find();
   res.json(orders);
 });
 
-app.get('/api/orders/:id', async (req: Request, res: Response) => {
+// Get order by ID
+router.get('/:id', async (req: Request, res: Response) => {
   try {
     const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ error: 'Order not found' });
@@ -38,7 +31,8 @@ app.get('/api/orders/:id', async (req: Request, res: Response) => {
   }
 });
 
-app.patch('/api/orders/:id/status', async (req: Request, res: Response) => {
+// Update order status
+router.patch('/:id/status', async (req: Request, res: Response) => {
   const { status } = req.body;
   try {
     const order = await Order.findByIdAndUpdate(
@@ -53,6 +47,4 @@ app.patch('/api/orders/:id/status', async (req: Request, res: Response) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`API running at http://localhost:${port}`);
-});
+export default router;
