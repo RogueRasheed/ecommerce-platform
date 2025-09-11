@@ -1,14 +1,16 @@
 import express, { Request, Response } from 'express';
+import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import Order from './models/Order';
+dotenv.config();
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// Connect to MongoDB
-mongoose.connect('mongodb://127.0.0.1:27017/ecommerce')
+  // Connect to MongoDB
+  mongoose.connect(process.env.MONGO_URI as string)
   .then(() => console.log('✅ MongoDB connected'))
   .catch(err => console.error('❌ MongoDB error:', err));
 
