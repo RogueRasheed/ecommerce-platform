@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 type Product = {
-  id: number;
+  _id: string;   // MongoDB’s ID
   name: string;
   price: number;
   image: string;
@@ -11,11 +11,11 @@ type Product = {
 
 type CartState = {
   cart: Product[];
-  addToCart: (product: Product) => void;
-  removeFromCart: (id: number) => void;
-  clearCart: () => void;
-  increaseQuantity: (id: number) => void;
-  decreaseQuantity: (id: number) => void;
+  addToCart: (product: Product) => void; // add entire product object
+  removeFromCart: (_id: string) => void; // remove by _id
+  clearCart: () => void; // clear entire cart
+  increaseQuantity: (_id: string) => void; // increase quantity by 1
+  decreaseQuantity: (_id: string) => void; // decrease quantity by 1
 };
 
 export const useCart = create<CartState>()(
@@ -25,11 +25,11 @@ export const useCart = create<CartState>()(
 
       addToCart: (product) =>
         set((state) => {
-          const existing = state.cart.find((item) => item.id === product.id);
+          const existing = state.cart.find((item) => item._id === product._id);
           if (existing) {
             return {
               cart: state.cart.map((item) =>
-                item.id === product.id
+                item._id === product._id
                   ? { ...item, quantity: (item.quantity || 1) + 1 }
                   : item
               ),
@@ -38,33 +38,33 @@ export const useCart = create<CartState>()(
           return { cart: [...state.cart, { ...product, quantity: 1 }] };
         }),
 
-      removeFromCart: (id) =>
+      removeFromCart: (_id) =>
         set((state) => ({
-          cart: state.cart.filter((item) => item.id !== id),
+          cart: state.cart.filter((item) => item._id !== _id),
         })),
 
       clearCart: () => set({ cart: [] }),
 
-      increaseQuantity: (id) =>
+      increaseQuantity: (_id) =>
         set((state) => ({
           cart: state.cart.map((item) =>
-            item.id === id
+            item._id === _id
               ? { ...item, quantity: (item.quantity || 1) + 1 }
               : item
           ),
         })),
 
-      decreaseQuantity: (id) =>
+      decreaseQuantity: (_id) =>
         set((state) => ({
           cart: state.cart.map((item) =>
-            item.id === id && (item.quantity || 1) > 1
+            item._id === _id && (item.quantity || 1) > 1
               ? { ...item, quantity: (item.quantity || 1) - 1 }
               : item
           ),
         })),
     }),
     {
-      name: "cart-storage", // 🔑 key used in localStorage
+      name: "cart-storage", // 🔑 persisted in localStorage
     }
   )
 );

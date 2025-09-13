@@ -1,18 +1,50 @@
-import { products } from "../store/products";
-import { useCart } from "../store/useCart"; 
+import { useEffect, useState } from "react";
+import { useCart } from "../store/useCart";
 import { ShoppingCart } from "lucide-react";
-import  useSearch  from "../utils/SearchHook";
-import { Link } from "react-router-dom";   // ✅ import Link
+import useSearch from "../utils/SearchHook";
+import { Link } from "react-router-dom";
+
+type Product = {
+  _id: string;   // MongoDB uses _id
+  name: string;
+  price: number;
+  description: string;
+  image: string;
+  category: string;
+  stock: number;
+};
 
 export default function Products() {
   const { addToCart } = useCart();
   const { searchQuery } = useSearch();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const res = await fetch("http://localhost:3000/api/products"); // ✅ fetch from backend
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        console.error("Failed to fetch products:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProducts();
+  }, []);
 
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  if (loading) {
+    return <p className="text-center text-gray-600">Loading products...</p>;
+  }
 
   return (
     <section className="py-20 bg-gray-50 text-gray-900">
@@ -27,11 +59,10 @@ export default function Products() {
           <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {filteredProducts.map((product) => (
               <div
-                key={product.id}
+                key={product._id} // ✅ use MongoDB _id
                 className="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden flex flex-col"
               >
-                {/* ✅ Make image + name clickable */}
-                <Link to={`/products/${product.id}`}>
+                <Link to={`/products/${product._id}`}>
                   <img
                     src={product.image}
                     alt={product.name}
@@ -40,7 +71,7 @@ export default function Products() {
                 </Link>
 
                 <div className="p-6 flex-1 flex flex-col">
-                  <Link to={`/products/${product.id}`}>
+                  <Link to={`/products/${product._id}`}>
                     <h3 className="text-lg font-semibold mb-2 hover:text-indigo-600 transition">
                       {product.name}
                     </h3>
@@ -55,7 +86,7 @@ export default function Products() {
                       ${product.price}
                     </span>
                     <button
-                      onClick={() => addToCart(product)}
+                      onClick={() => addToCart(product)} 
                       className="flex items-center gap-2 px-3 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
                     >
                       <ShoppingCart className="w-4 h-4" />
