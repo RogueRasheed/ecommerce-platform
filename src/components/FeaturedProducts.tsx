@@ -64,7 +64,6 @@ export default function FeaturedProducts() {
                 </div>
               </Link>
 
-              {/* ✅ Button separated from Link so it doesn’t trigger navigation */}
               <div className="px-6 pb-6">
                 <button
                   onClick={() => addToCart(product)}
@@ -76,7 +75,7 @@ export default function FeaturedProducts() {
             </div>
           ))}
         </div>
-        
+
         <Link
           to="/products"
           className="inline-block px-6 py-3 text-white bg-indigo-600 hover:bg-indigo-700 rounded-full font-medium transition"
