@@ -44,24 +44,28 @@ export default function FeaturedProducts() {
         </h2>
 
         <div className="grid gap-8 md:grid-cols-3 mb-12">
-          {featured.map((product) => (
-            <Link
-              to={`/products/${product._id}`}
+                  {featured.map((product) => (
+            <div
               key={product._id}
               className="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden"
             >
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-full h-64 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
-                <p className="text-gray-600 mb-4">{product.description}</p>
-                <span className="block text-indigo-500 font-bold mb-4">
-                  ${product.price}
-                </span>
+              <Link to={`/products/${product._id}`}>
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-64 object-cover"
+                />
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
+                  <p className="text-gray-600 mb-4">{product.description}</p>
+                  <span className="block text-indigo-500 font-bold mb-4">
+                    ${product.price}
+                  </span>
+                </div>
+              </Link>
 
+              {/* ✅ Button separated from Link so it doesn’t trigger navigation */}
+              <div className="px-6 pb-6">
                 <button
                   onClick={() => addToCart(product)}
                   className="w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition font-medium"
@@ -69,10 +73,10 @@ export default function FeaturedProducts() {
                   Add to Cart
                 </button>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
-
+        
         <Link
           to="/products"
           className="inline-block px-6 py-3 text-white bg-indigo-600 hover:bg-indigo-700 rounded-full font-medium transition"
