@@ -26,7 +26,7 @@ export default function Cart() {
         <div className="space-y-6">
           {cart.map((item) => (
             <div
-              key={item.id}
+              key={item._id}
               className="flex items-center gap-6 bg-white p-4 rounded-xl shadow"
             >
               <img
@@ -39,14 +39,14 @@ export default function Cart() {
                 <p className="text-gray-600">${item.price}</p>
                 <div className="flex items-center gap-3 mt-2">
                   <button
-                    onClick={() => decreaseQuantity(item.id)}
+                    onClick={() => decreaseQuantity(item._id)}
                     className="px-3 py-1 bg-gray-200 rounded"
                   >
                     -
                   </button>
                   <span>{item.quantity}</span>
                   <button
-                    onClick={() => increaseQuantity(item.id)}
+                    onClick={() => increaseQuantity(item._id)}
                     className="px-3 py-1 bg-gray-200 rounded"
                   >
                     +
@@ -58,7 +58,7 @@ export default function Cart() {
                   ${(item.price * (item.quantity || 1)).toFixed(2)}
                 </p>
                 <button
-                  onClick={() => removeFromCart(item.id)}
+                  onClick={() => removeFromCart(item._id)}
                   className="text-red-500 mt-2 hover:underline"
                 >
                   Remove

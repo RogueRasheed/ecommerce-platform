@@ -79,7 +79,7 @@ const handlePlaceOrder = (e: React.FormEvent) => {
             <div className="divide-y">
                 {cart.map((item) => (
                 <div
-                    key={item.id}
+                    key={item._id}
                     className="flex items-center justify-between py-4"
                 >
                     <div className="flex items-center gap-4">
@@ -96,14 +96,14 @@ const handlePlaceOrder = (e: React.FormEvent) => {
                         <div className="flex items-center gap-2 mt-1">
                         {/* Quantity Controls */}
                         <button
-                            onClick={() => decreaseQuantity(item.id)}
+                            onClick={() => decreaseQuantity(item._id)}
                             className="px-2 py-1 border rounded hover:bg-gray-100"
                         >
                             ➖
                         </button>
                         <span className="font-medium">{item.quantity}</span>
                         <button
-                            onClick={() => increaseQuantity(item.id)}
+                            onClick={() => increaseQuantity(item._id)}
                             className="px-2 py-1 border rounded hover:bg-gray-100"
                         >
                             ➕
@@ -117,7 +117,7 @@ const handlePlaceOrder = (e: React.FormEvent) => {
                         ${(item.price * (item.quantity || 1)).toFixed(2)}
                     </span>
                     <button
-                        onClick={() => removeFromCart(item.id)}
+                        onClick={() => removeFromCart(item._id)}
                         className="text-red-500 hover:text-red-700 transition text-sm"
                     >
                         ❌
