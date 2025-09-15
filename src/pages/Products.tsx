@@ -3,6 +3,7 @@ import { useCart } from "../store/useCart";
 import { ShoppingCart } from "lucide-react";
 import useSearch from "../utils/SearchHook";
 import { Link } from "react-router-dom";
+import API_BASE_URL from "../config";
 
 type Product = {
   _id: string;   // MongoDB uses _id
@@ -23,7 +24,7 @@ export default function Products() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const res = await fetch("http://localhost:3000/api/products"); // ✅ fetch from backend
+        const res = await fetch(`${API_BASE_URL}/products`); // ✅ fetch from backend
         const data = await res.json();
         setProducts(data);
       } catch (err) {

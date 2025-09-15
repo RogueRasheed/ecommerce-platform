@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Stepper from "../components/Stepper";
 import { findOrder, updateOrder } from "../utils/orderStorage";
 import type { Order } from "../utils/orderStorage";
@@ -90,12 +90,12 @@ export default function OrderStatus() {
 
 
       <div className="mt-12">
-        <a
-          href="/order-history"
+        <Link
+          to="/order-history"
           className="px-6 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700"
         >
           Back to Orders
-        </a>
+        </Link>
       </div>
     </div>
   );
