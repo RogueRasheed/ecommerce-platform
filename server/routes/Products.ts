@@ -30,7 +30,7 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 // ✅ Get all products
-router.get("/products", async (_req: Request, res: Response) => {
+router.get("/", async (_req: Request, res: Response) => {
   const products = await Product.find();
   res.json(products);
 });
