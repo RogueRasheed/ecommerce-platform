@@ -14,7 +14,8 @@ const port = process.env.PORT || 3000;
 const allowedOrigins = [
   "http://localhost:5173", // vite dev
   "http://localhost:3000", // sometimes used in dev
-  "https://ecommerce-platform-eight.vercel.app" // your vercel frontend
+  "https://ecommerce-platform-eight.vercel.app", // your vercel frontend
+  "https://ecommerce-platform-jkg6.onrender.com", // your render backend 
 ];
 
 // ✅ Dynamic CORS setup
