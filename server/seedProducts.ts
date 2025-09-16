@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { Product } from "./models/Products";
-import { products } from "../src/store/products"; // adjust path if needed
+import { seedProducts } from "./seedData/products"; // adjust path if needed
 
 dotenv.config();
 
@@ -13,13 +13,14 @@ async function seed() {
     await Product.deleteMany(); // clear old data
 
     // Map local products to DB schema
-    const formatted = products.map((p) => ({
+    const formatted = seedProducts.map((p) => ({
       name: p.name,
       description: p.description,
       price: p.price,
       image: p.image,
       category: p.category,
-      stock: 20, // default stock since your local data doesn’t have it
+      id: p.id,
+      stock: 12, // default stock since your local data doesn’t have it
     }));
 
     await Product.insertMany(formatted);
