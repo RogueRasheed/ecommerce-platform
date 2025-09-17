@@ -24,7 +24,7 @@ export default function Products() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const res = await fetch(`${API_BASE_URL}`); // ✅ fetch from backend
+        const res = await fetch(`${API_BASE_URL}/products`); // ✅ fetch from backend
         const data = await res.json();
         setProducts(data);
       } catch (err) {
