@@ -1,9 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import App from './App.tsx'
+import App from './App'
 import './index.css'
-import { SearchProvider } from './utils/SearchProvider.tsx'
+import { SearchProvider } from './utils/SearchProvider'
 
 createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
