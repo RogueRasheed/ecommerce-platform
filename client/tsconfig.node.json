@@ -1,15 +1,9 @@
 {
   "compilerOptions": {
-    "target": "ES2023",
-    "lib": ["ES2023"],
+    "composite": true,
     "module": "ESNext",
-    "moduleResolution": "node", // Changed from "bundler" for Node.js
-    "outDir": "./dist", // Output compiled files here
-    "rootDir": "./server", // Look for .ts files in server folder
-    "strict": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "noEmit": false // Allow output (remove this line if already false)
+    "moduleResolution": "Node",
+    "allowSyntheticDefaultImports": true
   },
-  "include": ["server/**/*.ts"] // Include all .ts files in server folder
+  "include": ["vite.config.ts"]
 }
