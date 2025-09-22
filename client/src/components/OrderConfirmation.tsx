@@ -50,7 +50,7 @@ export default function OrderConfirmation() {
 
       <Link
         to="/products"
-        className="mt-8 inline-block px-6 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700"
+        className="mt-8 inline-block px-6 py-2 bg-[#009632] text-white rounded-lg shadow hover:bg-[#009632]"
       >
         Continue Shopping
       </Link>
@@ -66,7 +66,7 @@ function EmptyOrderState() {
       <p className="text-gray-600">Looks like you haven’t placed any order yet.</p>
       <Link
         to="/"
-        className="mt-6 inline-block px-6 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700"
+        className="mt-6 inline-block px-6 py-2 bg-[#009632] text-white rounded-lg shadow hover:bg-[#009632]"
       >
         Continue Shopping
       </Link>

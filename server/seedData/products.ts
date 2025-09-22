@@ -1,95 +1,75 @@
-
-
 export const seedProducts = [
-    {
+  {
     id: 1,
-    name: "Wireless Headphones",
+    name: "Unripe Plantain Flour",
     price: 120,
     description:
-      "High quality over-ear wireless headphones with noise cancellation.",
-    image: "https://images.pexels.com/photos/3587496/pexels-photo-3587496.jpeg",
-    category: "Electronics",
+      "Processed from fresh green unripe plantain fruits, used to prepare that golden brown delicious, nutritious, healthy Amala Swallow. Goes with any soup of your choice.",
+    image: "/uploads/plantain-flour.jpg",
+    category: "Groceries",
   },
   {
     id: 2,
-    name: "Smartwatch",
+      name: "Beans Flour",
     price: 199,
     description:
-      "Fitness tracking smartwatch with heart-rate monitor and GPS.",
-    image: "https://images.pexels.com/photos/2861929/pexels-photo-2861929.jpeg",
+      "Processed from white beans for very high protein Akara Balls (Beans Cake), Moimoi (Beans Pudding) and Gbegiri (Beans Soup).",
+    image: "/uploads/smartwatch.jpg",
     category: "Electronics",
   },
   {
     id: 3,
-    name: "Running Shoes",
+    name: "GroundNut Flour with Spices",
     price: 89,
     description:
-      "Lightweight running shoes designed for comfort and durability.",
-    image: "https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg",
-    category: "Fashion",
+      "Processed from Auchi Special groundnut for that very spicy groundnut soup that is excellent for the whole family.",
+    image: "/uploads/groundnut-flour.jpg",
+    category: "Groceries",
   },
   {
     id: 4,
-    name: "Backpack",
+    name: "Odorless Fufu Flour",
     price: 75,
     description:
-      "Spacious and durable backpack perfect for school or travel.",
-    image: "https://images.pexels.com/photos/2905238/pexels-photo-2905238.jpeg",
+      "Fermented from fresh cassava tubers for low carbohydrate odorless smooth swallow that goes with any soup of your choice.",
+    image: "/uploads/backpack.jpg",
     category: "Accessories",
   },
   {
     id: 5,
-    name: "Bluetooth Speaker",
+    name: "Yellow Garri",
     price: 60,
     description:
-      "Portable Bluetooth speaker with deep bass and 12-hour battery life.",
-    image: "https://images.pexels.com/photos/13465232/pexels-photo-13465232.jpeg",
+      "Processed from fresh cassava tubers with palm oil, used to make Eba Swallow. Goes well with any soup of your choice.",
+    image: "/uploads/speaker.jpg",
     category: "Electronics",
   },
   {
     id: 6,
-    name: "Sunglasses",
+    name: "Soured Garri Soakies",
     price: 45,
     description:
-      "Stylish polarized sunglasses offering UV protection.",
-      image: "https://images.pexels.com/photos/1035733/pexels-photo-1035733.jpeg",
+    "A brand of low carbohydrate Garri, processed from fermented cassava tubers, used for that cool, tasty, delicious soak Garri. Combines well with Groundnut, Akara, Moimoi, Sugar, Banana, etc.",
+    image: "/uploads/sunglasses.jpg",
     category: "Fashion",
   },
   {
-      id: 7,
-      name: "Gaming Mouse",
+    id: 7,
+    name: "Edible Cassava Starch",
     price: 49,
     description:
-      "Ergonomic gaming mouse with customizable RGB lighting.",
-      image: "https://images.pexels.com/photos/2115256/pexels-photo-2115256.jpeg",
-      category: "Electronics",
-    },
+      "Processed from fresh cassava tubers and used to prepare starch swallow that goes well with banga soup, ogbono/okro soups, etc. ",
+    image: "/uploads/mouse.jpg",
+    category: "Electronics",
+  },
   {
     id: 8,
-    name: "Yoga Mat",
+    name: "Peppersoup Spices",
     price: 30,
     description:
-      "Non-slip yoga mat with extra cushioning for comfort.",
-    image: "https://images.pexels.com/photos/4325462/pexels-photo-4325462.jpeg",
+      "Blended from 10 different Nigerian herbs and spices. Used for making spicy detox peppersoup.",
+    image: "/uploads/yoga-mat.jpg",
     category: "Fitness",
-  },
-  {
-    id: 9,
-    name: "Leather Wallet",
-    price: 55,
-    description:
-      "Premium leather wallet with multiple card slots and RFID protection.",
-    image: "https://images.pexels.com/photos/915915/pexels-photo-915915.jpeg",
-    category: "Accessories",
-  },
-  {
-    id: 10,
-    name: "Desk Lamp",
-    price: 35,
-    description:
-      "Adjustable LED desk lamp with touch control and brightness settings.",
-    image: "https://images.pexels.com/photos/1112598/pexels-photo-1112598.jpeg",
-    category: "Home",
   },
 ];
 

@@ -9,7 +9,7 @@ export default function About() {
         {/* Heading */}
         <h1 className="text-4xl font-bold mb-6">About ShopEase</h1>
         <p className="text-lg text-gray-600 mb-12">
-          At <span className="font-semibold text-blue-600">ShopEase</span>, we believe shopping
+          At <span className="font-semibold text-[#009632]">ShopEase</span>, we believe shopping
           should be simple, enjoyable, and stress-free. That’s why we’ve built
           a store where quality products meet unbeatable convenience.
         </p>

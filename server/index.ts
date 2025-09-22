@@ -4,6 +4,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import orderRoutes from "./routes/Orders";
 import productRoutes from "./routes/Products";
+import path from "path";
 
 dotenv.config();
 
@@ -31,6 +32,8 @@ app.use(
     credentials: true,
   })
 );
+
+app.use("/uploads", express.static(path.join(__dirname, "./uploads")));
 
 app.use(express.json());
 

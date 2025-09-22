@@ -13,9 +13,9 @@ export default function Contact() {
         {/* Contact Info */}
         <div className="grid md:grid-cols-3 gap-8 mb-16 text-center">
           {[
-            { icon: <Mail className="w-6 h-6 text-indigo-600 mx-auto mb-3" />, title: "Email", value: "support@shopease.com" },
-            { icon: <Phone className="w-6 h-6 text-indigo-600 mx-auto mb-3" />, title: "Phone", value: "+1 (234) 567-890" },
-            { icon: <MapPin className="w-6 h-6 text-indigo-600 mx-auto mb-3" />, title: "Address", value: "123 Market Street, Lagos" },
+            { icon: <Mail className="w-6 h-6 text-[#009632] mx-auto mb-3" />, title: "Email", value: "support@shopease.com" },
+            { icon: <Phone className="w-6 h-6 text-[#009632] mx-auto mb-3" />, title: "Phone", value: "+1 (234) 567-890" },
+            { icon: <MapPin className="w-6 h-6 text-[#009632] mx-auto mb-3" />, title: "Address", value: "123 Market Street, Lagos" },
           ].map((item, i) => (
             <div
               key={i}
@@ -40,7 +40,7 @@ export default function Contact() {
               </label>
               <input
                 type="text"
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#009632] outline-none transition"
               />
             </div>
 
@@ -50,7 +50,7 @@ export default function Contact() {
               </label>
               <input
                 type="email"
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#009632] outline-none transition"
               />
             </div>
 
@@ -60,13 +60,13 @@ export default function Contact() {
               </label>
               <textarea
                 rows={5}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#009632] outline-none transition"
               />
             </div>
 
             <button
               type="submit"
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-lg transition transform hover:scale-105"
+              className="bg-[#009632] hover:bg-[#009632] text-white font-medium py-3 px-6 rounded-lg transition transform hover:scale-105"
             >
               Send Message
             </button>

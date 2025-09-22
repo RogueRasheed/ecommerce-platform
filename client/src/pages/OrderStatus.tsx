@@ -129,7 +129,7 @@ export default function OrderStatus() {
       <div className="mt-12">
         <Link
           to="/order-history"
-          className="px-6 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700"
+          className="px-6 py-2 bg-[#009632] text-white rounded-lg shadow hover:bg-[#009632]"
         >
           Back to Orders
         </Link>

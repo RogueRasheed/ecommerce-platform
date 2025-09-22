@@ -35,7 +35,7 @@ export default function TrackingOrder() {
         />
         <button
           onClick={handleSearch}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+          className="px-4 py-2 bg-[#009632] text-white rounded-lg hover:bg-[#009632] transition"
         >
           Search
         </button>
@@ -44,7 +44,7 @@ export default function TrackingOrder() {
       {order ? (
         <div className="p-4 bg-gray-100 rounded-lg text-center">
           <p className="text-lg font-semibold">Order ID: {order.id}</p>
-          <p className="text-indigo-600 font-bold text-xl mt-2">
+          <p className="text-[#009632] font-bold text-xl mt-2">
             Status: {order.status}
           </p>
         </div>

@@ -137,7 +137,7 @@ export default function CheckoutPage() {
               value={form.customerName}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#009632]"
             />
             <input
               type="email"
@@ -146,7 +146,7 @@ export default function CheckoutPage() {
               value={form.customerEmail}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#009632]"
             />
             <input
               type="tel"
@@ -155,7 +155,7 @@ export default function CheckoutPage() {
               value={form.phone}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#009632]"
             />
             <input
               type="text"
@@ -164,7 +164,7 @@ export default function CheckoutPage() {
               value={form.city}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#009632]"
             />
             <input
               type="text"
@@ -173,7 +173,7 @@ export default function CheckoutPage() {
               value={form.address}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#009632]"
             />
 
             <select
@@ -181,7 +181,7 @@ export default function CheckoutPage() {
               value={form.paymentMethod}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#009632]"
             >
               <option value="">Select Payment Method</option>
               <option value="card">Credit/Debit Card</option>
@@ -192,7 +192,7 @@ export default function CheckoutPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-indigo-600 text-white py-2 rounded-lg shadow hover:bg-indigo-700 disabled:opacity-60"
+              className="w-full bg-[#009632] text-white py-2 rounded-lg shadow hover:bg-[#009632] disabled:opacity-60"
             >
               {loading ? "Processing..." : "Place Order"}
             </button>

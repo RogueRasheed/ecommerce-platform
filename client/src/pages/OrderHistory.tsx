@@ -37,7 +37,7 @@ export default function OrderHistory() {
         </p>
         <a
           href="/products"
-          className="mt-6 inline-block px-6 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700"
+          className="mt-6 inline-block px-6 py-2 bg-[#009632] text-white rounded-lg shadow hover:bg-[#009632]"
         >
           Browse Products
         </a>
@@ -87,7 +87,7 @@ export default function OrderHistory() {
                 onClick={() =>
                  navigate(`/order/${order.id}/${order.status.toLowerCase()}`)
                 }
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                className="px-4 py-2 bg-[#009632] text-white rounded-lg hover:bg-[#009632]"
               >
                 Track Order
               </button>

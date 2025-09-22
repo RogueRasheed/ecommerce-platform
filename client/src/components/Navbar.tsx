@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../store/useCart";
 import  useSearch  from "../utils/SearchHook";
 import { useEffect, useState } from "react";
-import LogoImg from "../assets/Logoupscale.png";
+import LogoImg from "../assets/Logo2.jpeg";
 
 export default function Navbar() {
   const { cart } = useCart();

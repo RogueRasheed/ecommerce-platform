@@ -59,7 +59,7 @@ export default function FeaturedProducts() {
                 <div className="p-6">
                   <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
                   <p className="text-gray-600 mb-4">{product.description}</p>
-                  <span className="block text-indigo-500 font-bold mb-4">
+                  <span className="block text-[#009632] font-bold mb-4">
                     ${product.price}
                   </span>
                 </div>
@@ -68,7 +68,7 @@ export default function FeaturedProducts() {
               <div className="px-6 pb-6">
                 <button
                   onClick={() => addToCart(product)}
-                  className="w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition font-medium"
+                  className="w-full px-4 py-2 bg-[#009632] hover:bg-[#009632] text-white rounded-lg transition font-medium"
                 >
                   Add to Cart
                 </button>
@@ -79,7 +79,7 @@ export default function FeaturedProducts() {
 
         <Link
           to="/products"
-          className="inline-block px-6 py-3 text-white bg-indigo-600 hover:bg-indigo-700 rounded-full font-medium transition"
+          className="inline-block px-6 py-3 text-white bg-[#009632] hover:bg-[#009632] rounded-full font-medium transition"
         >
           See All Products
         </Link>

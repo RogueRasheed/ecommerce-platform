@@ -15,7 +15,7 @@ export default function Stepper({ steps, currentStep }: StepperProps) {
             <div
               className={`w-10 h-10 flex items-center justify-center rounded-full border-2 ${
                 isCompleted
-                  ? "bg-indigo-600 border-indigo-600 text-white"
+                  ? "bg-[#009632] border-[#009632] text-white"
                   : "border-gray-300 text-gray-400"
               }`}
             >
@@ -25,7 +25,7 @@ export default function Stepper({ steps, currentStep }: StepperProps) {
             {/* Label */}
             <span
               className={`mt-2 text-sm font-medium ${
-                isCompleted ? "text-indigo-600" : "text-gray-400"
+                isCompleted ? "text-[#009632]" : "text-gray-400"
               }`}
             >
               {step}
@@ -37,7 +37,7 @@ export default function Stepper({ steps, currentStep }: StepperProps) {
       {/* Line behind steps */}
       <div className="absolute top-5 left-0 w-full h-0.5 bg-gray-300 -z-10">
         <div
-          className="h-0.5 bg-indigo-600 transition-all"
+          className="h-0.5 bg-[#009632] transition-all"
           style={{
             width: `${(currentStep / (steps.length - 1)) * 100}%`,
           }}

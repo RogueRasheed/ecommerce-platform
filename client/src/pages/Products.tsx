@@ -73,7 +73,7 @@ export default function Products() {
 
                 <div className="p-6 flex-1 flex flex-col">
                   <Link to={`/products/${product._id}`}>
-                    <h3 className="text-lg font-semibold mb-2 hover:text-indigo-600 transition">
+                    <h3 className="text-lg font-semibold mb-2 hover:text-[#009632] transition">
                       {product.name}
                     </h3>
                   </Link>
@@ -83,12 +83,12 @@ export default function Products() {
                   </p>
 
                   <div className="flex items-center justify-between">
-                    <span className="text-indigo-600 font-bold text-lg">
+                    <span className="text-[#009632] font-bold text-lg">
                       ${product.price}
                     </span>
                     <button
                       onClick={() => addToCart(product)} 
-                      className="flex items-center gap-2 px-3 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                      className="flex items-center gap-2 px-3 py-2 text-sm bg-[#009632] text-white rounded-lg hover:bg-[#009632] transition"
                     >
                       <ShoppingCart className="w-4 h-4" />
                       Add to Cart

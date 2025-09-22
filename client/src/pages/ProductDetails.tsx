@@ -59,14 +59,14 @@ export default function ProductDetails() {
       <div className="flex flex-col justify-center">
         <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
         <p className="text-gray-600 mb-4">{product.description}</p>
-        <p className="text-xl font-semibold text-blue-600 mb-6">
+        <p className="text-xl font-semibold text-[#009632] mb-6">
           ${product.price}
         </p>
 
         <div className="flex gap-4">
           <button
             onClick={() => addToCart(product)}
-            className="px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
+            className="px-6 py-3 rounded-xl bg-[#009632] text-white font-semibold hover:bg-[#009632] transition"
           >
             Add to Cart
           </button>
