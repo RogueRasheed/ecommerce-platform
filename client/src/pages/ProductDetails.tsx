@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useCart } from "../store/useCart";
+import API_BASE_URL from "../config";
 
 type Product = {
   _id: string;
@@ -21,7 +22,7 @@ export default function ProductDetails() {
   useEffect(() => {
     async function fetchProduct() {
       try {
-        const res = await fetch(`http://localhost:3000/api/products/${id}`);
+        const res = await fetch(`${API_BASE_URL}/products/${id}`);
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
         setProduct(data);
