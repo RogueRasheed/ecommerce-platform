@@ -22,7 +22,7 @@ export default function ProductDetails() {
   useEffect(() => {
     async function fetchProduct() {
       try {
-        const res = await fetch(`${API_BASE_URL}/products/${id}`);
+        const res = await fetch(`${API_BASE_URL}/products/₦{id}`);
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
         setProduct(data);
@@ -60,7 +60,7 @@ export default function ProductDetails() {
         <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
         <p className="text-gray-600 mb-4">{product.description}</p>
         <p className="text-xl font-semibold text-[#009632] mb-6">
-          ${product.price}
+          ₦{product.price}
         </p>
 
         <div className="flex gap-4">
