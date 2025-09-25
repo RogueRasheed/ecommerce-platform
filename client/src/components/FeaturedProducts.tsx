@@ -50,7 +50,7 @@ export default function FeaturedProducts() {
               key={product._id}
               className="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden"
             >
-              <Link to={`/products/${product._id}`}>
+              <Link to={`/products/₦{product._id}`}>
                 <img
                   src={product.image}
                   alt={product.name}
@@ -60,7 +60,7 @@ export default function FeaturedProducts() {
                   <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
                   <p className="text-gray-600 mb-4">{product.description}</p>
                   <span className="block text-[#009632] font-bold mb-4">
-                    ${product.price}
+                    ₦{product.price}
                   </span>
                 </div>
               </Link>

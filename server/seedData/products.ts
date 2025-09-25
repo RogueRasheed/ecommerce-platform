@@ -5,7 +5,7 @@ export const seedProducts = [
     price: 5000,
     description:
       "Processed from fresh green unripe plantain fruits, used to prepare that golden brown delicious, nutritious, healthy Amala Swallow.",
-    image: "/uploads/plantain-flour.jpg",
+    image: "./uploads/PlantainFlourF.jpeg",
     category: "Groceries",
   },
   {
@@ -14,8 +14,8 @@ export const seedProducts = [
     price: 5000,
     description:
       "Processed from white beans for very high protein Akara Balls (Beans Cake), Moimoi (Beans Pudding) and Gbegiri (Beans Soup).",
-    image: "/uploads/smartwatch.jpg",
-    category: "Electronics",
+    image: "./uploads/BeansF.jpeg",
+    category: "Groceries",
   },
   {
     id: 3,
@@ -23,7 +23,7 @@ export const seedProducts = [
     price: 4000,
     description:
       "Processed from Auchi Special groundnut for that very spicy groundnut soup that is excellent for the whole family.",
-    image: "/uploads/groundnut-flour.jpg",
+    image: "./uploads/GroundnutFlourF.jpeg",
     category: "Groceries",
   },
   {
@@ -32,8 +32,8 @@ export const seedProducts = [
     price: 4000,
     description:
       "Fermented from fresh cassava tubers for low carbohydrate odorless smooth swallow that goes with any soup of your choice.",
-    image: "/uploads/backpack.jpg",
-    category: "Accessories",
+    image: "./uploads/FufuF.jpeg",
+    category: "Groceries",
   },
   {
     id: 5,
@@ -41,7 +41,7 @@ export const seedProducts = [
     price: 2500,
     description:
       "Processed from fresh cassava tubers with palm oil, used to make Eba Swallow. Goes well with any soup of your choice.",
-    image: "/uploads/speaker.jpg",
+    image: "./YellowGarriF.jpeg",
     category: "Electronics",
   },
   {
@@ -50,8 +50,8 @@ export const seedProducts = [
     price: 2500,
     description:
     "A brand of low carbohydrate Garri, processed from fermented cassava tubers, used for that cool, tasty, delicious soak Garri. Combines well with Groundnut, Akara, Moimoi, Sugar, etc.",
-    image: "/uploads/sunglasses.jpg",
-    category: "Fashion",
+    image: "./uploads/SouredgarriF.jpeg",
+    category: "Grocieries",
   },
   {
     id: 7,
@@ -59,8 +59,8 @@ export const seedProducts = [
     price: 4000,
     description:
       "Processed from fresh cassava tubers and used to prepare starch swallow that goes well with banga soup, ogbono/okro soups, etc. ",
-    image: "/uploads/mouse.jpg",
-    category: "Electronics",
+    image: "./uploads/EdibleStarchB.jpeg",
+    category: "Groceries",
   },
   {
     id: 8,
