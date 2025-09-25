@@ -25,11 +25,12 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between gap-4">
        {/* Logo */}
         <Link to="/" className="flex items-center">
-          <img 
-            src={LogoImg} 
-            alt="ShopEase Logo" 
-            className="h-15 w-33" 
+          <img
+            src={LogoImg}
+            alt="Amineru Foods"
+            className="h-12 w-auto object-contain"
           />
+
         </Link>
 
 
@@ -37,10 +38,14 @@ export default function Navbar() {
 
         {/* Desktop Links */}
         <div className="hidden md:flex gap-6 text-gray-700 font-medium">
-          <Link to="/" className="hover:text-blue-600 transition">Home</Link>
-          <Link to="/products" className="hover:text-blue-600 transition">Products</Link>
-          <Link to="/contact" className="hover:text-blue-600 transition">Contact</Link>
-          <Link to="/order-history" className="hover:text-blue-600 transition">Order History</Link>
+          <Link to="/" className="hover:text-[#009632]
+ transition">Home</Link>
+          <Link to="/products" className="hover:text-[#009632]
+ transition">Products</Link>
+          <Link to="/contact" className="hover:text-[#009632]
+ transition">Contact</Link>
+          <Link to="/order-history" className="hover:text-[#009632]
+ transition">Order History</Link>
         </div>
 
         {/* Search Bar (hidden on mobile) */}
@@ -50,15 +55,18 @@ export default function Navbar() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search products..."
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#009632]
+"
           />
         </div>
 
         {/* Cart */}
         <Link to="/cart" className="relative cursor-pointer">
-          <ShoppingCart className="w-6 h-6 text-gray-700 hover:text-blue-600 transition" />
+          <ShoppingCart className="w-6 h-6 text-gray-700 hover:text-[#009632]
+ transition" />
           {totalItems > 0 && (
-            <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+            <span className="absolute -top-2 -right-2 bg-[#009632]
+ text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
               {totalItems}
             </span>
           )}
@@ -81,13 +89,19 @@ export default function Navbar() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search products..."
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#009632]
+"
           />
-          <Link to="/" className="hover:text-blue-600 transition" onClick={() => setMobileOpen(false)}>Home</Link>
-          <Link to="/products" className="hover:text-blue-600 transition" onClick={() => setMobileOpen(false)}>Products</Link>
-          <Link to="/order-history" className="hover:text-blue-600 transition" onClick={() => setMobileOpen(false)}>Order History</Link>
-          <Link to="/about" className="hover:text-blue-600 transition" onClick={() => setMobileOpen(false)}>About</Link>
-          <Link to="/contact" className="hover:text-blue-600 transition" onClick={() => setMobileOpen(false)}>Contact</Link>
+          <Link to="/" className="hover:text-[#009632]
+ transition" onClick={() => setMobileOpen(false)}>Home</Link>
+          <Link to="/products" className="hover:text-[#009632]
+ transition" onClick={() => setMobileOpen(false)}>Products</Link>
+          <Link to="/order-history" className="hover:text-[#009632]
+ transition" onClick={() => setMobileOpen(false)}>Order History</Link>
+          <Link to="/about" className="hover:text-[#009632]
+ transition" onClick={() => setMobileOpen(false)}>About</Link>
+          <Link to="/contact" className="hover:text-[#009632]
+ transition" onClick={() => setMobileOpen(false)}>Contact</Link>
         </div>
       )}
     </nav>

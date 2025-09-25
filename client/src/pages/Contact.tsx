@@ -13,9 +13,9 @@ export default function Contact() {
         {/* Contact Info */}
         <div className="grid md:grid-cols-3 gap-8 mb-16 text-center">
           {[
-            { icon: <Mail className="w-6 h-6 text-[#009632] mx-auto mb-3" />, title: "Email", value: "support@shopease.com" },
-            { icon: <Phone className="w-6 h-6 text-[#009632] mx-auto mb-3" />, title: "Phone", value: "+1 (234) 567-890" },
-            { icon: <MapPin className="w-6 h-6 text-[#009632] mx-auto mb-3" />, title: "Address", value: "123 Market Street, Lagos" },
+            { icon: <Mail className="w-6 h-6 text-[#009632] mx-auto mb-3" />, title: "Email", value: "aminerunigent@yahoo.com" },
+            { icon: <Phone className="w-6 h-6 text-[#009632] mx-auto mb-3" />, title: "Phone", value: (<><span>+234 08066262972</span><br /><span>+234 08035013890</span></>) },
+            { icon: <MapPin className="w-6 h-6 text-[#009632] mx-auto mb-3" />, title: "Address", value: "226, Murtala Mohammed Way, Benin City, Edo State, Nigeria" },
           ].map((item, i) => (
             <div
               key={i}
