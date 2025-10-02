@@ -41,7 +41,7 @@ export const seedProducts = [
     price: 2500,
     description:
       "Processed from fresh cassava tubers with palm oil, used to make Eba Swallow. Goes well with any soup of your choice.",
-    image: "/YellowGarriF.jpeg",
+    image: "/uploads/YellowGarriF.jpeg",
     category: "Electronics",
   },
   {
@@ -51,7 +51,7 @@ export const seedProducts = [
     description:
     "A brand of low carbohydrate Garri, processed from fermented cassava tubers, used for that cool, tasty, delicious soak Garri. Combines well with Groundnut, Akara, Moimoi, Sugar, etc.",
     image: "/uploads/SouredgarriF.jpeg",
-    category: "Grocieries",
+    category: "Groceries",
   },
   {
     id: 7,
