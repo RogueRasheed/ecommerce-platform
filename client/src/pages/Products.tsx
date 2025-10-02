@@ -63,7 +63,7 @@ export default function Products() {
                 key={product._id} // ✅ use MongoDB _id
                 className="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden flex flex-col"
               >
-                <Link to={`/products/₦{product._id}`}>
+                <Link to={`/products/${product._id}`}>
                   <img
                     src={product.image}
                     alt={product.name}
@@ -72,7 +72,7 @@ export default function Products() {
                 </Link>
 
                 <div className="p-6 flex-1 flex flex-col">
-                  <Link to={`/products/₦{product._id}`}>
+                  <Link to={`/products/${product._id}`}>
                     <h3 className="text-lg font-semibold mb-2 hover:text-[#009632] transition">
                       {product.name}
                     </h3>

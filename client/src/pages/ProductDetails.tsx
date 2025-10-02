@@ -14,7 +14,7 @@ type Product = {
 };
 
 export default function ProductDetails() {
-  const { id } = useParams<{ id: string }>(); // route param (make sure route is `/products/:id`)
+  const { id } = useParams<{ id: string }>(); // ✅ match backend route param
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const addToCart = useCart((state) => state.addToCart);
@@ -22,8 +22,8 @@ export default function ProductDetails() {
   useEffect(() => {
     async function fetchProduct() {
       try {
-        const res = await fetch(`${API_BASE_URL}/products/₦{id}`);
-        if (!res.ok) throw new Error("Failed to fetch");
+        const res = await fetch(`${API_BASE_URL}/products/${id}`);
+        if (!res.ok) throw new Error("Failed to fetch product");
         const data = await res.json();
         setProduct(data);
       } catch (err) {
@@ -51,7 +51,7 @@ export default function ProductDetails() {
         <img
           src={product.image}
           alt={product.name}
-          className="rounded-xl w-full max-h-[400px] object-cover"
+          className="rounded-xl w-full h-80 object-contain bg-gray-100 p-4"
         />
       </div>
 
@@ -59,14 +59,22 @@ export default function ProductDetails() {
       <div className="flex flex-col justify-center">
         <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
         <p className="text-gray-600 mb-4">{product.description}</p>
-        <p className="text-xl font-semibold text-[#009632] mb-6">
+        <p className="text-xl font-semibold text-[#009632] mb-2">
           ₦{product.price}
+        </p>
+
+        <p className="mb-6">
+          {product.stock > 0 ? (
+            <span className="text-green-600 font-medium">✅ In Stock</span>
+          ) : (
+            <span className="text-red-600 font-medium">❌ Out of Stock</span>
+          )}
         </p>
 
         <div className="flex gap-4">
           <button
             onClick={() => addToCart(product)}
-            className="px-6 py-3 rounded-xl bg-[#009632] text-white font-semibold hover:bg-[#009632] transition"
+            className="px-6 py-3 rounded-xl bg-[#009632] text-white font-semibold hover:bg-[#008020] transition"
           >
             Add to Cart
           </button>

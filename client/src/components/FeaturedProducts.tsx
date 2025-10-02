@@ -50,7 +50,7 @@ export default function FeaturedProducts() {
               key={product._id}
               className="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden"
             >
-              <Link to={`/products/₦{product._id}`}>
+              <Link to={`/products/${product._id}`}>
                 <img
                   src={product.image}
                   alt={product.name}

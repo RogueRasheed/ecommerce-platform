@@ -9,3 +9,4 @@ interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
 // Note: only variables prefixed with VITE_ are exposed to the client
+
