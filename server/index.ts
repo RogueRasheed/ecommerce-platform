@@ -19,6 +19,7 @@ const allowedOrigins = [
   "https://ecommerce-platform-jkg6.onrender.com", // your render backend 
 ];
 
+
 // ✅ Dynamic CORS setup
 app.use(
   cors({
@@ -33,19 +34,19 @@ app.use(
   })
 );
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use(express.json());
 
 // ✅ MongoDB connection
 mongoose
-  .connect(process.env.MONGO_URI as string)
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("❌ MongoDB error:", err));
+.connect(process.env.MONGO_URI as string)
+.then(() => console.log("✅ MongoDB connected"))
+.catch((err) => console.error("❌ MongoDB error:", err));
 
 // ✅ API routes
 app.use("/api/orders", orderRoutes);
 app.use("/api/products", productRoutes);
+app.use("/uploads", express.static(path.resolve(__dirname, "uploads")));
 
 app.listen(port, () => {
   console.log(`API running at http://localhost:${port}`);
