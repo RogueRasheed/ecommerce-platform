@@ -1,5 +1,6 @@
-import { Facebook, Instagram, } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Twitter,  } from "lucide-react";
 import logo from "../assets/LogoBlack.jpeg";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -9,7 +10,7 @@ export default function Footer() {
         <div>
           <img src={logo} alt="Amineru Logo" className="h-32 mb-4" />
           <p className="text-sm">
-            Amineru Nigeria Enterprises is dedicated to providing nutritious,
+            Amineru Nigeria Enterprises Ltd is dedicated to providing nutritious,
             affordable agro-based food products with a global reach.
           </p>
         </div>
@@ -18,9 +19,9 @@ export default function Footer() {
         <div>
           <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
           <ul className="space-y-2 text-sm">
-            <li><a href="/about" className="hover:text-white">About Us</a></li>
-            <li><a href="/products" className="hover:text-white">Products</a></li>
-            <li><a href="/contact" className="hover:text-white">Contact</a></li>
+            <li><Link to="/about" className="hover:text-[#009632]">About Us</Link></li>
+            <li><Link to="/products" className="hover:text-[#009632]">Products</Link></li>
+            <li><Link to="/contact" className="hover:text-[#009632]">Contact</Link></li>
           </ul>
         </div>
 
@@ -28,15 +29,17 @@ export default function Footer() {
         <div>
           <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
           <div className="flex gap-8">
-            <a href="#" className="hover:text-[#009632]"><Facebook /></a>
-            <a href="#" className="hover:text-[#009632]"><Instagram /></a>
+            <a href="https://www.facebook.com/aminerufoods" className="hover:text-[#009632]"><Facebook /></a>
+            <a href="https://www.instagram.com/aminerufoodss" className="hover:text-[#009632]"><Instagram /></a>
+            <a href="https://www.linkedin.com/in/amineru-foods-ab4157245" className="hover:text-[#009632]"><Linkedin /></a>
+            <a href="https://www.twitter.com/foodsamineru" className="hover:text-[#009632]"><Twitter /></a>
           </div>
         </div>
       </div>
 
       {/* Copyright */}
       <div className="mt-8 text-center text-sm text-gray-500">
-        © {new Date().getFullYear()} Amineru Nigeria Enterprises. All rights reserved.
+        © {new Date().getFullYear()} Amineru Nigeria Enterprises Ltd. All rights reserved.
       </div>
     </footer>
   );

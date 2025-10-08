@@ -4,7 +4,8 @@ import cors from "cors";
 import mongoose from "mongoose";
 import orderRoutes from "./routes/Orders";
 import productRoutes from "./routes/Products";
-import path from "path";
+import adminRoutes from "./routes/Admin";
+
 
 dotenv.config();
 
@@ -46,7 +47,8 @@ mongoose
 // ✅ API routes
 app.use("/api/orders", orderRoutes);
 app.use("/api/products", productRoutes);
-app.use("/uploads", express.static(path.resolve(__dirname, "uploads")));
+app.use("/api/admin", adminRoutes);
+
 
 app.listen(port, () => {
   console.log(`API running at http://localhost:${port}`);

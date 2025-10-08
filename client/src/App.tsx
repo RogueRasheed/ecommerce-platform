@@ -10,8 +10,9 @@ import OrderConfirmation from "./components/OrderConfirmation";
 import OrderHistory from "./pages/OrderHistory";
 import ProductDetails from "./pages/ProductDetails";
 import OrderStatus from "./pages/OrderStatus";
-import AdminOrders from "./admin/AdminOrders";
-
+import AdminDashboard from "./admin/AdminDashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./pages/Login";
 export default function App() {
   return (
     <Routes>
@@ -26,8 +27,14 @@ export default function App() {
         <Route path="/order-history" element={<OrderHistory />} />
         <Route path="/products/:id" element={<ProductDetails />} />
         <Route path="/order/:id/status" element={<OrderStatus />} />
+        <Route 
+        path="/admin" element={
+        <ProtectedRoute adminOnly>
+        <AdminDashboard />
+        </ProtectedRoute>
+            } />
+        <Route path="/login" element={<Login />} />
 
-        <Route path="/adminorder" element={<AdminOrders />} />
       </Route>
     </Routes>
   );

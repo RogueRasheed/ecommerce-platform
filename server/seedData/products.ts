@@ -59,7 +59,7 @@ export const seedProducts = [
     price: 4000,
     description:
       "Processed from fresh cassava tubers and used to prepare starch swallow that goes well with banga soup, ogbono/okro soups, etc. ",
-    image: "/images/products/EdibleStarchB.jpeg",
+    image: "/images/products/StarchF.jpeg",
     category: "Groceries",
   },
   {
@@ -68,7 +68,7 @@ export const seedProducts = [
     price: 3500,
     description:
       "Blended from 10 different Nigerian herbs and spices. Used for making spicy detox peppersoup.",
-    image: "/images/products/PPSoupF.jpeg",
+    image: "/images/products/PPSoupF.jpg",
     category: "Fitness",
   },
 ];
@@ -79,5 +79,5 @@ export const formatted = seedProducts.map((p) => ({
   price: p.price,
   image: p.image,
   category: p.category,
-  stock: 20,
+  stock: 40,
 }));
