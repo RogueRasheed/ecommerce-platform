@@ -10,9 +10,11 @@ interface OrderItem {
 export interface IOrder extends Document {
   customerName: string;
   customerEmail: string;
+  customerPhone: string;
+  customerAddress: string;
   items: OrderItem[];
   total: number;
-  status: "processing" | "successful" | "failed" | "delivered";
+  status: "processing" | "successful" | "failed" | "delivered" | "cancelled" | "shipped" | "pending";
   createdAt: Date;
 }
 
@@ -20,6 +22,8 @@ const OrderSchema: Schema = new Schema(
   {
     customerName: { type: String, required: true },
     customerEmail: { type: String, required: true },
+    customerPhone: { type: String, required: true },
+    customerAddress: { type: String, required: true },
     items: [
       {
         productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
@@ -31,7 +35,7 @@ const OrderSchema: Schema = new Schema(
     total: { type: Number, required: true },
     status: {
       type: String,
-      enum: ["processing", "successful", "failed", "delivered"],
+      enum: ["pending", "processing", "successful", "failed", "delivered", "cancelled", "shipped"],
       default: "processing",
     },
   },

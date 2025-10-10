@@ -1,25 +1,36 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-interface AuthRequest extends Request {
-  admin?: { id: string; username: string };
+interface JwtPayload {
+  id: string;
+  username: string;
 }
 
-export default function verifyAdmin(req: AuthRequest, res: Response, next: NextFunction) {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Access denied. No token provided." });
-  }
-
-  const token = authHeader.split(" ")[1];
-
+export default function verifyAdmin(req: Request, res: Response, next: NextFunction) {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string; username: string };
-    req.admin = decoded;
-    next(); // ✅ proceed to the protected route
-  } catch (error) {
-    return res.status(403).json({ message: "Invalid or expired token." });
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      console.log("❌ No token provided");
+      return res.status(401).json({ message: "Access denied, token missing" });
+    }
+
+    const token = authHeader.split(" ")[1];
+    console.log("🪪 Received token:", token);
+
+    const secret = process.env.JWT_SECRET as string;
+    const decoded = jwt.verify(token, secret) as JwtPayload;
+    console.log("✅ Decoded token:", decoded);
+
+    if (decoded.username !== "admin") {
+      console.log("❌ Not an admin user");
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    (req as any).user = decoded;
+    next();
+  } catch (err: any) {
+    console.error("❌ verifyAdmin error:", err.message);
+    return res.status(500).json({ message: "Server error", error: err.message });
   }
 }
-// Middleware to verify admin JWT token
