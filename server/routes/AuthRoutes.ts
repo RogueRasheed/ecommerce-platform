@@ -6,6 +6,13 @@ import Admin from "../models/Admin";
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key"; // ✅ store in .env later
 
+
+router.get("/test", (req, res) => {
+  res.send("✅ Auth route working!");
+});
+
+
+
 // ✅ Register Admin (only run once manually)
 router.post("/register", async (req, res) => {
   try {
