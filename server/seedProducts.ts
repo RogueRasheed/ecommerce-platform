@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { Product } from "./models/Products";
-import { seedProducts } from "./seedData/products"; // adjust path if needed
+import { seedProducts } from "./seedData/products"; 
 
 dotenv.config();
 

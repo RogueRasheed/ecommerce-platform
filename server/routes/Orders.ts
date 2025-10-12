@@ -50,10 +50,18 @@ router.post("/", async (req: Request, res: Response) => {
 
     await order.save();
     res.status(201).json(order);
-  } catch (err) {
-    console.error(err);
-    res.status(400).json({ error: "Failed to create order" });
+  } 
+    catch (err) {
+    console.error("❌ Error creating order:", err);
+
+    if (err instanceof Error) {
+      res.status(400).json({ error: err.message });
+    } else {
+      res.status(400).json({ error: "Failed to create order" });
+    }
   }
+
+
 });
 
 // ✅ Get all orders
