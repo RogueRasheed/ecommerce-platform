@@ -7,9 +7,8 @@ const router = Router();
 // ✅ Create order with product + stock validation
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const { customerName, customerEmail, items } = req.body;
+    const { customerName, customerEmail, customerPhone, customerAddress, items } = req.body;
 
-    // Validate items exist
     if (!items || items.length === 0) {
       return res.status(400).json({ error: "Order must have at least one item" });
     }
@@ -27,7 +26,6 @@ router.post("/", async (req: Request, res: Response) => {
         return res.status(400).json({ error: `Not enough stock for ${product.name}` });
       }
 
-      // Reduce stock
       product.stock -= item.qty;
       await product.save();
 
@@ -44,25 +42,22 @@ router.post("/", async (req: Request, res: Response) => {
     const order = new Order({
       customerName,
       customerEmail,
+      customerPhone,
+      customerAddress,
       items: orderItems,
       total,
     });
 
     await order.save();
     res.status(201).json(order);
-  } 
-    catch (err) {
+  } catch (err) {
     console.error("❌ Error creating order:", err);
-
-    if (err instanceof Error) {
-      res.status(400).json({ error: err.message });
-    } else {
-      res.status(400).json({ error: "Failed to create order" });
-    }
+    res.status(400).json({
+      error: err instanceof Error ? err.message : "Failed to create order",
+    });
   }
-
-
 });
+
 
 // ✅ Get all orders
 router.get("/", async (_req: Request, res: Response) => {
