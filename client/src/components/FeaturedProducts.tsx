@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import API_BASE_URL from "../config";
 import ProductCard from "../components/ProductCard";
+import Loader from "./Loader";
 
 type Product = {
   _id: string;
@@ -32,7 +33,7 @@ export default function FeaturedProducts() {
     fetchProducts();
   }, []);
 
-  if (loading) return <p className="text-center text-gray-600">Loading...</p>;
+  if (loading) return <Loader message="Loading..." />;
 
   const featured = products.slice(0, 3);
 

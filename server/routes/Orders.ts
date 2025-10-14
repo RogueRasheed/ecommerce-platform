@@ -65,6 +65,7 @@ router.get("/", async (_req: Request, res: Response) => {
   res.json(orders);
 });
 
+
 // ✅ Get order by ID
 router.get("/:id", async (req: Request, res: Response) => {
   try {
@@ -75,6 +76,36 @@ router.get("/:id", async (req: Request, res: Response) => {
     res.status(400).json({ error: "Invalid ID format" });
   }
 });
+
+
+// ✅ NEW: Get all orders by customer email or phone (for order history page)
+router.get("/lookup/customer", async (req: Request, res: Response) => {
+  try {
+    const { email, phone } = req.query;
+
+    if (!email && !phone) {
+      return res.status(400).json({ error: "Email or phone number required" });
+    }
+
+    const query: any = {};
+    if (email) query.customerEmail = email;
+    if (phone) query.customerPhone = phone;
+
+    const orders = await Order.find(query)
+      .populate("items.productId", "name price")
+      .sort({ createdAt: -1 });
+
+    if (orders.length === 0) {
+      return res.status(404).json({ message: "No orders found for this customer" });
+    }
+
+    res.json(orders);
+  } catch (err) {
+    console.error("❌ Error fetching customer orders:", err);
+    res.status(500).json({ error: "Failed to fetch order history" });
+  }
+});
+
 
 // ✅ Update order status (restricted)
 router.patch("/:id/status", async (req: Request, res: Response) => {

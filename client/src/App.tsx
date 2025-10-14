@@ -13,9 +13,11 @@ import OrderStatus from "./pages/OrderStatus";
 import AdminDashboard from "./admin/AdminDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
+import { Toaster } from "react-hot-toast";
 export default function App() {
   return (
-    <Routes>
+   <>
+   <Routes>
       <Route element={<AppLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Products />} />
@@ -37,5 +39,7 @@ export default function App() {
 
       </Route>
     </Routes>
+    <Toaster position="top-right" reverseOrder={false} />
+   </>
   );
 }

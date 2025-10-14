@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import useSearch from "../utils/SearchHook";
 import ProductCard from "../components/ProductCard";
 import API_BASE_URL from "../config";
+import Loader from "../components/Loader";
 
 type Product = {
   _id: string;
@@ -41,7 +42,7 @@ export default function Products() {
   );
 
   if (loading) {
-    return <p className="text-center text-gray-600">Loading products...</p>;
+    return <Loader message="Loading products..." />;
   }
 
   return (

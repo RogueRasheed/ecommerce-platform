@@ -1,19 +1,21 @@
 import { useState } from "react";
 import { useCart } from "../store/useCart";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import Loader from "../components/Loader";
 
 export default function CheckoutPage() {
   const { cart, clearCart, increaseQuantity, decreaseQuantity, removeFromCart } = useCart();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // 🔑 Track form inputs
+  // ✅ Updated keys to match backend (customerPhone, customerAddress)
   const [form, setForm] = useState({
     customerName: "",
     customerEmail: "",
-    phone: "",
+    customerPhone: "",
     city: "",
-    address: "",
+    customerAddress: "",
     paymentMethod: "",
   });
 
@@ -32,33 +34,36 @@ export default function CheckoutPage() {
 
     try {
       const items = cart.map((item) => ({
-        productId: item._id, // backend expects productId
+        productId: item._id,
+        name: item.name,
+        price: item.price,
         qty: item.quantity || 1,
       }));
 
+      // Sends all required fields backend expects
       const response = await fetch("https://ecommerce-platform-jkg6.onrender.com/api/orders", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           customerName: form.customerName,
           customerEmail: form.customerEmail,
+          customerPhone: form.customerPhone,
+          customerAddress: `${form.customerAddress}, ${form.city}`,
           items,
+          total,
+          status: "processing",
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to place order");
-      }
+      if (!response.ok) throw new Error("Failed to place order");
 
       const order = await response.json();
-
+      toast.success(`✅ Thanks ${form.customerName}, your order has been placed!`);
       clearCart();
       navigate(`/order/${order._id}/status`);
     } catch (error) {
       console.error(error);
-      alert("❌ Something went wrong while placing your order.");
+      toast.error("❌ Something went wrong while placing your order.");
     } finally {
       setLoading(false);
     }
@@ -130,6 +135,7 @@ export default function CheckoutPage() {
           <form onSubmit={handlePlaceOrder} className="bg-white p-6 rounded-xl shadow space-y-4">
             <h2 className="text-2xl font-semibold mb-4">Shipping Details</h2>
 
+            {/* ✅ Updated input names */}
             <input
               type="text"
               name="customerName"
@@ -150,9 +156,9 @@ export default function CheckoutPage() {
             />
             <input
               type="tel"
-              name="phone"
+              name="customerPhone"
               placeholder="Phone Number"
-              value={form.phone}
+              value={form.customerPhone}
               onChange={handleChange}
               required
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#009632]"
@@ -168,9 +174,9 @@ export default function CheckoutPage() {
             />
             <input
               type="text"
-              name="address"
+              name="customerAddress"
               placeholder="Home Address"
-              value={form.address}
+              value={form.customerAddress}
               onChange={handleChange}
               required
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#009632]"
@@ -184,17 +190,17 @@ export default function CheckoutPage() {
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#009632]"
             >
               <option value="">Select Payment Method</option>
-              <option value="card">Credit/Debit Card</option>
-              <option value="paypal">PayPal</option>
+              <option value="card">Paystack</option>
+              <option value="paypal">Flutterwave</option>
               <option value="cod">Cash on Delivery</option>
             </select>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#009632] text-white py-2 rounded-lg shadow hover:bg-[#009632] disabled:opacity-60"
+              className="w-full bg-[#009632] text-white py-2 rounded-lg shadow hover:bg-[#008c2f] disabled:opacity-60"
             >
-              {loading ? "Processing..." : "Place Order"}
+              {loading ? <Loader message="Processing..." /> : "Place Order"}
             </button>
           </form>
         </div>
