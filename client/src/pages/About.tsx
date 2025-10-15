@@ -6,9 +6,9 @@ export default function About() {
     <section className="py-20 bg-gray-50 text-gray-900">
       <div className="max-w-5xl mx-auto px-6 text-center">
         {/* Heading */}
-        <h1 className="text-4xl font-bold mb-6">About Amineru Nigeria Enterprises</h1>
+        <h1 className="text-4xl font-bold mb-6">About Amineru Nigeria Enterprises Limited</h1>
         <p className="text-lg text-gray-600 mb-12">
-          At <span className="font-semibold text-[#009632]">Amineru Nigeria Enterprises</span>, we believe shopping
+          At <span className="font-semibold text-[#009632]">Amineru Nigeria Enterprises Limited</span>, we believe shopping
           should be simple, enjoyable, and stress-free. That’s why we’ve built
           a store where quality products meet unbeatable convenience.
         </p>
@@ -182,9 +182,9 @@ export default function About() {
 
         {/* Closing */}
         <div className="mt-16">
-          <h2 className="text-2xl font-bold mb-4">Why Amineru Nigeria Enterprises?</h2>
+          <h2 className="text-2xl font-bold mb-4">Why Amineru Nigeria Enterprises Ltd?</h2>
           <p className="text-gray-600 max-w-3xl mx-auto">
-            Because shopping shouldn’t feel like a chore. With Amineru Nigeria Enterprises, you’ll
+            Because shopping shouldn’t feel like a chore. With Amineru Nigeria Enterprises Ltd, you’ll
             find trusted products, fair prices, and a team that cares about
             making every order special.
           </p>
