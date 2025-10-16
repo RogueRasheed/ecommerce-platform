@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle, Truck, Package, XCircle } from "lucide-react";
 
 type OrderItem = {
   id: number;
@@ -39,21 +38,6 @@ export default function OrderHistory() {
   const fallbackImage =
     "https://via.placeholder.com/80x80.png?text=Product+Image";
 
-  const getProgress = (status: Order["status"]) => {
-    switch (status) {
-      case "Processing":
-        return { step: 1, color: "bg-yellow-500", icon: <Package size={18} /> };
-      case "Shipped":
-        return { step: 2, color: "bg-blue-500", icon: <Truck size={18} /> };
-      case "Delivered":
-        return { step: 3, color: "bg-green-500", icon: <CheckCircle size={18} /> };
-      case "Failed":
-        return { step: 3, color: "bg-red-500", icon: <XCircle size={18} /> };
-      default:
-        return { step: 0, color: "bg-gray-300", icon: null };
-    }
-  };
-
   if (orders.length === 0) {
     return (
       <div className="max-w-xl mx-auto px-6 py-16 text-center">
@@ -73,14 +57,21 @@ export default function OrderHistory() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-bold mb-10 text-gray-800">📦 Order History</h1>
+    <div className="max-w-5xl mx-auto px-6 py-12 relative">
+      {/* Header with top-right button */}
+      <div className="flex justify-between items-center mb-10">
+        <h1 className="text-3xl font-bold text-gray-800">📦 Order History</h1>
+        <button
+          onClick={() => navigate("/lookup-order")}
+          className="px-5 py-2 bg-[#009632] text-white font-medium rounded-lg shadow hover:bg-[#007a29] transition"
+        >
+          🔍 Track Order
+        </button>
+      </div>
 
       <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
         {orders.map((order) => {
           const firstItem = order.items[0];
-          const { color } = getProgress(order.status);
-
           return (
             <div
               key={order.id}
@@ -112,41 +103,20 @@ export default function OrderHistory() {
                       ? `+${order.items.length - 1} more item(s)`
                       : "1 item"}
                   </p>
-                </div>
-              </div>
-
-              {/* Progress Tracker */}
-              <div className="relative mb-5">
-                <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 rounded"></div>
-                <div
-                  className={`absolute top-1/2 left-0 h-1 rounded transition-all duration-500 ${color}`}
-                  style={{
-                    width:
-                      order.status === "Processing"
-                        ? "33%"
-                        : order.status === "Shipped"
-                        ? "66%"
-                        : "100%",
-                  }}
-                ></div>
-
-                <div className="relative flex justify-between mt-6">
-                  <div className="flex flex-col items-center text-gray-600 text-sm">
-                    <Package size={18} />
-                    <span>Processing</span>
-                  </div>
-                  <div className="flex flex-col items-center text-gray-600 text-sm">
-                    <Truck size={18} />
-                    <span>Shipped</span>
-                  </div>
-                  <div className="flex flex-col items-center text-gray-600 text-sm">
-                    {order.status === "Failed" ? (
-                      <XCircle size={18} className="text-red-500" />
-                    ) : (
-                      <CheckCircle size={18} />
-                    )}
-                    <span>{order.status === "Failed" ? "Failed" : "Delivered"}</span>
-                  </div>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Status:{" "}
+                    <span
+                      className={`font-medium ${
+                        order.status === "Delivered"
+                          ? "text-green-600"
+                          : order.status === "Failed"
+                          ? "text-red-500"
+                          : "text-yellow-600"
+                      }`}
+                    >
+                      {order.status}
+                    </span>
+                  </p>
                 </div>
               </div>
 
@@ -172,14 +142,6 @@ export default function OrderHistory() {
                 <span className="font-semibold text-gray-800">
                   Total: ${order.total.toFixed(2)}
                 </span>
-                <button
-                  onClick={() =>
-                    navigate(`/order/${order.id}/${order.status.toLowerCase()}`)
-                  }
-                  className="px-4 py-2 bg-[#009632] text-white rounded-lg hover:bg-[#007a29] transition"
-                >
-                  Track Order
-                </button>
               </div>
             </div>
           );

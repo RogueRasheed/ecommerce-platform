@@ -14,6 +14,7 @@ import AdminDashboard from "./admin/AdminDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
 import { Toaster } from "react-hot-toast";
+import OrderLookup from "./pages/OrderLookup";
 export default function App() {
   return (
    <>
@@ -29,11 +30,12 @@ export default function App() {
         <Route path="/order-history" element={<OrderHistory />} />
         <Route path="/products/:id" element={<ProductDetails />} />
         <Route path="/order/:id/status" element={<OrderStatus />} />
-        <Route 
-        path="/admin" element={
-        <ProtectedRoute adminOnly>
-        <AdminDashboard />
-        </ProtectedRoute>
+        <Route path="/lookup-order" element={<OrderLookup />} />
+        <Route
+          path="/admin" element={
+          <ProtectedRoute adminOnly>
+            <AdminDashboard />
+          </ProtectedRoute>
             } />
         <Route path="/login" element={<Login />} />
 
