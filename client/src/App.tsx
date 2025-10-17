@@ -15,6 +15,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
 import { Toaster } from "react-hot-toast";
 import OrderLookup from "./pages/OrderLookup";
+import OrderDetails from "./components/OrderDetails";
 export default function App() {
   return (
    <>
@@ -29,7 +30,8 @@ export default function App() {
         <Route path="/order-confirmation" element={<OrderConfirmation />} />
         <Route path="/order-history" element={<OrderHistory />} />
         <Route path="/products/:id" element={<ProductDetails />} />
-        <Route path="/order/:id/status" element={<OrderStatus />} />
+        <Route path="/orders/:id/status" element={<OrderStatus />} />
+        <Route path="/orders/:id" element={<OrderDetails />} />
         <Route path="/lookup-order" element={<OrderLookup />} />
         <Route
           path="/admin" element={

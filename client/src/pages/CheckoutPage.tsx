@@ -49,6 +49,7 @@ export default function CheckoutPage() {
           customerEmail: form.customerEmail,
           customerPhone: form.customerPhone,
           customerAddress: `${form.customerAddress}, ${form.city}`,
+          paymentMethod: form.paymentMethod,
           items,
           total,
           status: "processing",
@@ -60,7 +61,7 @@ export default function CheckoutPage() {
       const order = await response.json();
       toast.success(`✅ Thanks ${form.customerName}, your order has been placed!`);
       clearCart();
-      navigate(`/order/${order._id}/status`);
+      navigate(`/orders/${order._id}/status`);
     } catch (error) {
       console.error(error);
       toast.error("❌ Something went wrong while placing your order.");
