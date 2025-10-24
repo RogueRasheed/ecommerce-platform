@@ -27,7 +27,7 @@ export default function Contact() {
     setErrorMessage("");
 
     try {
-      const res = await fetch("https://ecommerce-platform-jkg6.onrender.com/api/contact", {
+      const res = await fetch("https://ecommerce-platform-jkg6.onrender.com/api/message/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
