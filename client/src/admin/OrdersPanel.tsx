@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import API_BASE_URL from "../config"; // keep this import
+import API_BASE_URL from "../config";
 
 type Order = {
   _id: string;
@@ -9,6 +9,7 @@ type Order = {
   total: number;
   status: string;
   createdAt: string;
+  items: { productId: { name: string; price: number }; qty: number }[];
 };
 
 export default function OrdersPanel() {
@@ -20,7 +21,7 @@ export default function OrdersPanel() {
   async function fetchOrders(status?: string, search?: string) {
     try {
       setLoading(true);
-      let url = `${API_BASE_URL}/admin/orders`;
+      let url = `${API_BASE_URL}/api/orders`;
 
       const params: string[] = [];
       if (status && status !== "all") params.push(`status=${status}`);
@@ -29,9 +30,10 @@ export default function OrdersPanel() {
 
       const res = await fetch(url);
       const data = await res.json();
-      setOrders(data);
+      setOrders(Array.isArray(data) ? data : [data]);
     } catch (err) {
       console.error("❌ Failed to load orders", err);
+      setOrders([]);
     } finally {
       setLoading(false);
     }
@@ -39,12 +41,20 @@ export default function OrdersPanel() {
 
   async function updateStatus(id: string, status: string) {
     try {
-      await fetch(`${API_BASE_URL}/admin/orders/${id}/status`, {
-        method: "PUT",
+      const res = await fetch(`${API_BASE_URL}/api/orders/${id}/status`, {
+        method: "PATCH", // Make sure it matches your backend method
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
       });
-      fetchOrders(statusFilter, searchTerm);
+
+      if (!res.ok) throw new Error("Failed to update order");
+
+      const updatedOrder = await res.json();
+
+      // Update the local state instead of refetching everything
+      setOrders((prev) =>
+        prev.map((order) => (order._id === id ? updatedOrder : order))
+      );
     } catch (err) {
       console.error("❌ Failed to update order", err);
     }
@@ -59,13 +69,14 @@ export default function OrdersPanel() {
     fetchOrders();
   }, []);
 
-  if (loading) return <p className="text-center">Loading orders...</p>;
+  if (loading)
+    return <p className="text-center text-gray-600 mt-8">Loading orders...</p>;
 
   return (
     <div className="overflow-x-auto">
       {/* Header + Refresh */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Orders</h2>
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+        <h2 className="text-2xl font-bold text-gray-800">Orders</h2>
         <button
           onClick={() => fetchOrders(statusFilter, searchTerm)}
           className="bg-[#009632] text-white px-4 py-2 rounded hover:bg-green-700 transition"
@@ -75,9 +86,9 @@ export default function OrdersPanel() {
       </div>
 
       {/* Filter + Search */}
-      <div className="flex flex-wrap items-center gap-3 mb-4">
+      <div className="flex flex-wrap items-center gap-3 mb-6">
         <select
-          className="border rounded px-3 py-2"
+          className="border rounded px-3 py-2 shadow-sm"
           value={statusFilter}
           onChange={(e) => {
             const selected = e.target.value;
@@ -86,10 +97,10 @@ export default function OrdersPanel() {
           }}
         >
           <option value="all">All Orders</option>
-          <option value="pending">Pending</option>
-          <option value="shipped">Shipped</option>
+          <option value="processing">Processing</option>
+          <option value="successful">Successful</option>
+          <option value="failed">Failed</option>
           <option value="delivered">Delivered</option>
-          <option value="cancelled">Cancelled</option>
         </select>
 
         <form onSubmit={handleSearch} className="flex flex-1 gap-2">
@@ -98,7 +109,7 @@ export default function OrdersPanel() {
             placeholder="Search by name, email, or phone..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="flex-1 border rounded px-3 py-2"
+            className="flex-1 border rounded px-3 py-2 shadow-sm"
           />
           <button
             type="submit"
@@ -110,47 +121,53 @@ export default function OrdersPanel() {
       </div>
 
       {/* Orders Table */}
-      <table className="w-full border border-gray-200 bg-white rounded-lg shadow-md">
-        <thead className="bg-gray-100 text-left">
+      <table className="min-w-full border border-gray-200 bg-white rounded-lg shadow-md">
+        <thead className="bg-gray-100 sticky top-0 z-10">
           <tr>
-            <th className="p-3 border-b">Customer</th>
-            <th className="p-3 border-b">Amount</th>
-            <th className="p-3 border-b">Status</th>
-            <th className="p-3 border-b">Date</th>
-            <th className="p-3 border-b">Action</th>
+            <th className="p-3 border-b text-left">Customer</th>
+            <th className="p-3 border-b text-left">Amount</th>
+            <th className="p-3 border-b text-left">Items</th>
+            <th className="p-3 border-b text-left">Status</th>
+            <th className="p-3 border-b text-left">Date</th>
+            <th className="p-3 border-b text-left">Action</th>
           </tr>
         </thead>
         <tbody>
           {orders.length === 0 ? (
             <tr>
-              <td colSpan={5} className="p-5 text-center text-gray-500">
+              <td colSpan={6} className="p-5 text-center text-gray-500">
                 No orders found
               </td>
             </tr>
           ) : (
             orders.map((order) => (
-              <tr key={order._id} className="border-b hover:bg-gray-50">
-                <td className="p-3">
+              <tr
+                key={order._id}
+                className="border-b hover:bg-gray-50 transition-all"
+              >
+                <td className="p-3 font-medium">
                   {order.customerName || "Unknown"}
                   <br />
                   <span className="text-sm text-gray-500">
                     {order.customerEmail || "No email"}
                   </span>
                 </td>
-                <td className="p-3">₦{order.total}</td>
 
-                {/* Status Badge */}
-                <td className="p-3 capitalize">
+                <td className="p-3 font-semibold">₦{order.total}</td>
+
+                <td className="p-3">{order.items?.length || 0}</td>
+
+                <td className="p-3">
                   <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      order.status === "pending"
+                    className={`px-3 py-1 rounded-full text-sm font-medium capitalize ${
+                      order.status === "processing"
                         ? "bg-yellow-100 text-yellow-800"
-                        : order.status === "shipped"
-                        ? "bg-blue-100 text-blue-800"
-                        : order.status === "delivered"
+                        : order.status === "successful"
                         ? "bg-green-100 text-green-800"
-                        : order.status === "cancelled"
+                        : order.status === "failed"
                         ? "bg-red-100 text-red-800"
+                        : order.status === "delivered"
+                        ? "bg-blue-100 text-blue-800"
                         : "bg-gray-100 text-gray-800"
                     }`}
                   >
@@ -164,14 +181,16 @@ export default function OrdersPanel() {
 
                 <td className="p-3">
                   <select
-                    className="border rounded px-2 py-1"
+                    className="border rounded px-2 py-1 shadow-sm"
                     value={order.status}
-                    onChange={(e) => updateStatus(order._id, e.target.value)}
+                    onChange={(e) =>
+                      updateStatus(order._id, e.target.value)
+                    }
                   >
-                    <option value="pending">Pending</option>
-                    <option value="shipped">Shipped</option>
+                    <option value="processing">Processing</option>
+                    <option value="successful">Successful</option>
+                    <option value="failed">Failed</option>
                     <option value="delivered">Delivered</option>
-                    <option value="cancelled">Cancelled</option>
                   </select>
                 </td>
               </tr>

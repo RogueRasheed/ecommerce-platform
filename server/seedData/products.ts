@@ -42,7 +42,7 @@ export const seedProducts = [
     description:
       "Processed from fresh cassava tubers with palm oil, used to make Eba Swallow. Goes well with any soup of your choice.",
     image: "/images/products/YellowGarriF.jpeg",
-    category: "Electronics",
+    category: "Groceries",
   },
   {
     id: 6,
@@ -69,7 +69,7 @@ export const seedProducts = [
     description:
       "Blended from 10 different Nigerian herbs and spices. Used for making spicy detox peppersoup.",
     image: "/images/products/PPSoupF.jpg",
-    category: "Fitness",
+    category: "Groceries",
   },
 ];
 

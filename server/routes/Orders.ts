@@ -117,16 +117,23 @@ router.patch("/:id/status", async (req: Request, res: Response) => {
   }
 
   try {
-    const order = await Order.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true }
+    // Update the status
+    await Order.updateOne({ _id: req.params.id }, { $set: { status } });
+
+    // Fetch the full order with populated items
+    const order = await Order.findById(req.params.id).populate(
+      "items.productId",
+      "name price"
     );
+
     if (!order) return res.status(404).json({ error: "Order not found" });
+
     res.json(order);
-  } catch {
+  } catch (err) {
+    console.error("❌ Failed to update order status:", err);
     res.status(400).json({ error: "Failed to update status" });
   }
 });
+
 
 export default router;

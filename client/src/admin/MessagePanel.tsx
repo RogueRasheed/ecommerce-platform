@@ -17,7 +17,7 @@ export default function MessagesPanel() {
   async function fetchMessages() {
     try {
       setLoading(true);
-      const res = await fetch(`${API_BASE_URL}/admin/messages`);
+      const res = await fetch(`${API_BASE_URL}/message/messages`);
       const data = await res.json();
       setMessages(data);
     } catch (err) {
@@ -29,7 +29,7 @@ export default function MessagesPanel() {
 
   async function deleteMessage(id: string) {
     try {
-      const res = await fetch(`${API_BASE_URL}/admin/messages/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/message/messages/${id}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Failed to delete message");
