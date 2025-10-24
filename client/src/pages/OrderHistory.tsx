@@ -124,7 +124,7 @@ export default function OrderHistory() {
                         {item.name} × {item.qty}
                       </span>
                       <span className="font-medium">
-                        ${(item.price * item.qty).toFixed(2)}
+                        ₦{(item.price * item.qty).toFixed(2)}
                       </span>
                     </li>
                   ))}
@@ -141,7 +141,7 @@ export default function OrderHistory() {
                 {/* Footer */}
                 <div className="mt-5 flex justify-between items-center">
                   <span className="font-semibold text-gray-800">
-                    Total: ${order.total.toFixed(2)}
+                    Total: ₦{order.total.toFixed(2)}
                   </span>
                 </div>
               </div>

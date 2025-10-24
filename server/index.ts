@@ -6,6 +6,7 @@ import orderRoutes from "./routes/Orders";
 import productRoutes from "./routes/Products";
 import adminRoutes from "./routes/Admin";
 import authRoutes from "./routes/AuthRoutes";
+import messageRoutes from "./routes/messageRoutes";
 
 
 dotenv.config();
@@ -50,6 +51,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/message", messageRoutes);
 
 
 app.listen(port, () => {
