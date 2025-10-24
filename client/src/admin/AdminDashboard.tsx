@@ -2,9 +2,10 @@ import { useState } from "react";
 import OrdersPanel from "./OrdersPanel";
 import ProductsPanel from "./ProductsPanel";
 import DashboardStats from "./DashboardStats";
+import MessagesPanel from "./MessagePanel";
 
 export default function AdminDashboard() {
-  const [tab, setTab] = useState<"dashboard" | "orders" | "products">("dashboard");
+  const [tab, setTab] = useState<"dashboard" | "orders" | "products" | "messages">("dashboard");
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -35,7 +36,7 @@ export default function AdminDashboard() {
           Orders
         </button>
         <button
-          className={`px-6 py-2 font-medium rounded-r-lg ${
+          className={`px-6 py-2 font-medium ${
             tab === "products"
               ? "bg-[#009632] text-white"
               : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -44,6 +45,16 @@ export default function AdminDashboard() {
         >
           Products
         </button>
+        <button
+          className={`px-6 py-2 font-medium rounded-r-lg ${
+            tab === "messages"
+              ? "bg-[#009632] text-white"
+              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+          }`}
+          onClick={() => setTab("messages")}
+         >
+          Messages
+        </button>
       </div>
 
       {/* Main Content */}
@@ -51,6 +62,8 @@ export default function AdminDashboard() {
         {tab === "dashboard" && <DashboardStats />}
         {tab === "orders" && <OrdersPanel />}
         {tab === "products" && <ProductsPanel />}
+        {tab === "messages" && <MessagesPanel />}
+
       </div>
     </div>
   );
