@@ -58,7 +58,7 @@ export default function DashboardStats() {
         {/* Revenue */}
         <StatCard
           title="Total Revenue"
-          value={`₦${stats.totalRevenue.toLocaleString()}`}
+          value={`₦${stats?.totalRevenue?.toLocaleString() || 0}`}
           color="bg-gray-100 text-gray-800"
         />
       </div>
