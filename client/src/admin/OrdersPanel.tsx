@@ -21,7 +21,7 @@ export default function OrdersPanel() {
   async function fetchOrders(status?: string, search?: string) {
     try {
       setLoading(true);
-      let url = `${API_BASE_URL}/api/orders`;
+      let url = `${API_BASE_URL}/orders`;
 
       const params: string[] = [];
       if (status && status !== "all") params.push(`status=${status}`);
@@ -30,6 +30,7 @@ export default function OrdersPanel() {
 
       const res = await fetch(url);
       const data = await res.json();
+      console.log("Fetched orders:", data);
       setOrders(Array.isArray(data) ? data : [data]);
     } catch (err) {
       console.error("❌ Failed to load orders", err);
@@ -41,7 +42,7 @@ export default function OrdersPanel() {
 
   async function updateStatus(id: string, status: string) {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/orders/${id}/status`, {
+      const res = await fetch(`${API_BASE_URL}/orders/${id}/status`, {
         method: "PATCH", // Make sure it matches your backend method
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
