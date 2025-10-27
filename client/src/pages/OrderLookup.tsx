@@ -7,13 +7,21 @@ type OrderItem = {
   qty: number;
 };
 
+type OrderStatus =
+  | "processing"
+  | "successful"
+  | "failed"
+  | "delivered"
+  | "cancelled"
+  | "shipped";
+
 type Order = {
   _id: string;
   customerName: string;
   customerEmail: string;
   customerPhone: string;
   total: number;
-  status: "processing" | "successful" | "failed" | "delivered";
+  status: OrderStatus;
   createdAt: string;
   items: OrderItem[];
 };
@@ -43,7 +51,7 @@ export default function OrderLookup() {
 
       if (!res.ok) throw new Error("No orders found for this input");
 
-      const data = await res.json();
+      const data: Order[] = await res.json();
       setOrders(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
@@ -52,38 +60,31 @@ export default function OrderLookup() {
     }
   };
 
-  const getStatusColor = (status: Order["status"]) => {
-    switch (status) {
-      case "processing":
-        return "bg-yellow-100 text-yellow-700";
-      case "successful":
-        return "bg-green-100 text-green-700";
-      case "failed":
-        return "bg-red-100 text-red-700";
-      case "delivered":
-        return "bg-blue-100 text-blue-700";
-      default:
-        return "bg-gray-100 text-gray-700";
-    }
+  const getStatusColor = (status: OrderStatus) => {
+    const colors: Record<OrderStatus, string> = {
+      processing: "bg-yellow-100 text-yellow-700",
+      successful: "bg-green-100 text-green-700",
+      failed: "bg-red-100 text-red-700",
+      delivered: "bg-blue-100 text-blue-700",
+      cancelled: "bg-red-100 text-red-700",
+      shipped: "bg-blue-100 text-blue-700",
+    };
+    return colors[status] || "bg-gray-100 text-gray-700";
   };
 
-  return (
-    <div className="max-w-3xl mx-auto px-6 py-12 relative">
-      {/* Top Right Button */}
-      <div className="absolute right-6 top-6">
-        <a
-          href="/order-history"
-          className="px-5 py-2 bg-[#009632] text-white rounded-lg shadow hover:bg-[#007a29] transition"
-        >
-          View Order History
-        </a>
-      </div>
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
 
+  return (
+    <div className="max-w-3xl mx-auto px-6 py-12">
       <h1 className="text-3xl font-bold mb-8 text-gray-800 text-center">
         Order Lookup
       </h1>
 
-      {/* Lookup Form */}
       <form
         onSubmit={handleLookup}
         className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
@@ -105,14 +106,10 @@ export default function OrderLookup() {
         </button>
       </form>
 
-      {/* Error Message */}
-      {error && (
-        <p className="text-center text-red-500 font-medium mb-4">{error}</p>
-      )}
+      {error && <p className="text-center text-red-500 font-medium mb-4">{error}</p>}
 
-      {/* Orders List */}
       {orders.length > 0 ? (
-        <div className="space-y-6 animate-fadeIn">
+        <div className="space-y-6">
           {orders.map((order) => (
             <div
               key={order._id}
@@ -123,23 +120,20 @@ export default function OrderLookup() {
                   <p className="font-semibold text-gray-800">
                     Order #{order._id.slice(-6)}
                   </p>
-                  <p className="text-sm text-gray-500">
-                    {new Date(order.createdAt).toLocaleDateString()}
-                  </p>
+                  <p className="text-sm text-gray-500">{formatDate(order.createdAt)}</p>
                 </div>
                 <span
                   className={`px-3 py-1 text-sm rounded-full font-medium ${getStatusColor(
                     order.status
                   )}`}
                 >
-                  {order.status.charAt(0).toUpperCase() +
-                    order.status.slice(1)}
+                  {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                 </span>
               </div>
 
               <div className="flex justify-between items-center">
                 <p className="font-semibold text-gray-800">
-                  Total: ${order.total.toFixed(2)}
+                  Total: ₦{order.total.toLocaleString()}
                 </p>
                 <button
                   onClick={() =>
@@ -162,7 +156,7 @@ export default function OrderLookup() {
                         {item.name} × {item.qty}
                       </span>
                       <span className="font-medium">
-                        ${(item.price * item.qty).toFixed(2)}
+                        ₦{(item.price * item.qty).toFixed(2)}
                       </span>
                     </li>
                   ))}
@@ -175,7 +169,7 @@ export default function OrderLookup() {
         !loading &&
         !error && (
           <p className="text-center text-gray-600">
-            Enter your email or phone number to see your order history.
+            Enter your email or phone number to see your order details.
           </p>
         )
       )}

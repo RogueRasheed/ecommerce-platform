@@ -96,8 +96,8 @@ export default function Navbar() {
  transition" onClick={() => setMobileOpen(false)}>Home</Link>
           <Link to="/products" className="hover:text-[#009632]
  transition" onClick={() => setMobileOpen(false)}>Products</Link>
-          <Link to="/order-history" className="hover:text-[#009632]
- transition" onClick={() => setMobileOpen(false)}>Order History</Link>
+          <Link to="/lookup-order" className="hover:text-[#009632]
+ transition" onClick={() => setMobileOpen(false)}>Order Lookup</Link>
           <Link to="/about" className="hover:text-[#009632]
  transition" onClick={() => setMobileOpen(false)}>About</Link>
           <Link to="/contact" className="hover:text-[#009632]

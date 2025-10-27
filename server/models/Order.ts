@@ -38,6 +38,7 @@ const OrderSchema: Schema = new Schema(
       enum: ["pending", "processing", "successful", "failed", "delivered", "cancelled", "shipped"],
       default: "processing",
     },
+    visibleToUser: { type: Boolean, default: true },
   },
   { timestamps: true } // ✅ auto adds createdAt & updatedAt
 );

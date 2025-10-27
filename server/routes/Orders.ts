@@ -87,9 +87,9 @@ router.get("/lookup/customer", async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Email or phone number required" });
     }
 
-    const query: any = {};
-    if (email) query.customerEmail = email;
-    if (phone) query.customerPhone = phone;
+    const query: any = { $or: [] };
+    if (email) query.$or.push({ customerEmail: email });
+    if (phone) query.$or.push({ customerPhone: phone });
 
     const orders = await Order.find(query)
       .populate("items.productId", "name price")
@@ -105,6 +105,7 @@ router.get("/lookup/customer", async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to fetch order history" });
   }
 });
+
 
 
 // ✅ Update order status (restricted)
@@ -132,6 +133,23 @@ router.patch("/:id/status", async (req: Request, res: Response) => {
   } catch (err) {
     console.error("❌ Failed to update order status:", err);
     res.status(400).json({ error: "Failed to update status" });
+  }
+});
+
+router.patch("/:id/hide", async (req: Request, res: Response) => {
+  try {
+    const order = await Order.findByIdAndUpdate(
+      req.params.id,
+      { visibleToUser: false },
+      { new: true }
+    );
+
+    if (!order) return res.status(404).json({ error: "Order not found" });
+
+    res.json({ message: "Order hidden from user view", order });
+  } catch (err) {
+    console.error("❌ Failed to hide order:", err);
+    res.status(400).json({ error: "Failed to hide order" });
   }
 });
 
