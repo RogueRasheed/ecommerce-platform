@@ -96,17 +96,31 @@ export default function CheckoutPage() {
                       <p className="font-medium">{item.name}</p>
                       <div className="flex items-center gap-2 mt-1">
                         <button
+                          type="button"
+                          aria-label="Decrease quantity"
                           onClick={() => decreaseQuantity(item._id)}
-                          className="px-2 py-1 border rounded hover:bg-gray-100"
+                          disabled={(item.quantity || 1) <= 1}
+                          className="flex items-center justify-center h-8 w-8 rounded-full border hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#009632]"
+                          title="Decrease"
                         >
-                          ➖
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-700">
+                            <path d="M5 12h14" />
+                          </svg>
                         </button>
-                        <span className="font-medium">{item.quantity}</span>
+              
+                        <span className="mx-3 font-medium text-lg">{item.quantity}</span>
+              
                         <button
+                          type="button"
+                          aria-label="Increase quantity"
                           onClick={() => increaseQuantity(item._id)}
-                          className="px-2 py-1 border rounded hover:bg-gray-100"
+                          className="flex items-center justify-center h-8 w-8 rounded-full bg-[#009632] text-white hover:bg-[#008c2f] transition focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#009632]"
+                          title="Increase"
                         >
-                          ➕
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+                            <path d="M12 5v14" />
+                            <path d="M5 12h14" />
+                          </svg>
                         </button>
                       </div>
                     </div>
