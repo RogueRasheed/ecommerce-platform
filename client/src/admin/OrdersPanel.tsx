@@ -187,9 +187,7 @@ async function updateStatus(id: string, status: string) {
                 <td className="p-3">
                   <span
                     className={`px-3 py-1 rounded-full text-sm font-medium capitalize ${
-                      order.status === "pending"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : order.status === "processing"
+                      order.status === "processing"
                         ? "bg-blue-100 text-blue-800"
                         : order.status === "successful"
                         ? "bg-green-100 text-green-800"
@@ -222,7 +220,6 @@ async function updateStatus(id: string, status: string) {
                     <option value="delivered">Delivered</option>
                     <option value="cancelled">Cancelled</option>
                     <option value="shipped">Shipped</option>
-                    <option value="pending">Pending</option>
                   </select>
                 </td>
               </tr>
