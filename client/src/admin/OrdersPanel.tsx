@@ -16,6 +16,7 @@ type Order = {
 export default function OrdersPanel() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
+  const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
@@ -59,6 +60,9 @@ async function updateStatus(id: string, status: string) {
         order._id === updatedOrder._id ? updatedOrder : order
       )
     );
+    setHighlightedId(updatedOrder._id);
+    // Remove highlight after 3 seconds
+    setTimeout(() => setHighlightedId(null), 3000);
   } catch (err) {
     console.error("❌ Failed to update order", err);
     toast.error("Failed to update order status");
@@ -172,7 +176,7 @@ async function updateStatus(id: string, status: string) {
             </tr>
           ) : (
             filteredOrders.map((order) => (
-              <tr key={order._id} className="border-b hover:bg-gray-50 transition-all">
+              <tr key={order._id} className={`border-b hover:bg-gray-50 transition-all ${highlightedId === order._id ? "bg-green-100" : ""}`}>
                 <td className="p-3 font-medium">
                   {order.customerName}
                   <br />
