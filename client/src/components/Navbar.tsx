@@ -44,8 +44,8 @@ export default function Navbar() {
  transition">Products</Link>
           <Link to="/contact" className="hover:text-[#009632]
  transition">Contact</Link>
-          <Link to="/order-history" className="hover:text-[#009632]
- transition">Order History</Link>
+          <Link to="/lookup-order" className="hover:text-[#009632]
+ transition">Order Lookup</Link>
         </div>
 
         {/* Search Bar (hidden on mobile) */}
