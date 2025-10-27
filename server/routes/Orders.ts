@@ -110,7 +110,7 @@ router.get("/lookup/customer", async (req: Request, res: Response) => {
 // ✅ Update order status (restricted)
 router.patch("/:id/status", async (req: Request, res: Response) => {
   const { status } = req.body;
-  const allowedStatuses = ["processing", "successful", "failed", "delivered"];
+  const allowedStatuses = ["processing", "successful", "failed", "delivered", "cancelled", "shipped"];
 
   if (!allowedStatuses.includes(status)) {
     return res.status(400).json({ error: "Invalid status value" });

@@ -20,7 +20,7 @@ async function seed() {
       image: p.image,
       category: p.category,
       id: p.id,
-      stock: 12, // default stock since your local data doesn’t have it
+      stock: 24, // default stock since your local data doesn’t have it
     }));
 
     await Product.insertMany(formatted);
