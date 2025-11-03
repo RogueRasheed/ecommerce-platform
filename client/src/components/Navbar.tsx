@@ -2,8 +2,15 @@ import { ShoppingCart, Menu, X } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../store/useCart";
 import  useSearch  from "../utils/SearchHook";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import LogoImg from "../assets/Logo2.jpeg";
+
+const menuItems = [
+  { label: "Home", path: "/" },
+  { label: "Products", path: "/products" },
+  { label: "Contact", path: "/contact" },
+  { label: "Order Lookup", path: "/lookup-order" },
+];
 
 export default function Navbar() {
   const { cart } = useCart();
@@ -19,6 +26,23 @@ export default function Navbar() {
       navigate("/products");
     }
   }, [searchQuery, location, navigate]);
+
+  const linkRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
+
+useEffect(() => {
+  const activeEl = linkRefs.current[location.pathname];
+  if (activeEl) {
+    const rect = activeEl.getBoundingClientRect();
+    const parentRect = activeEl.parentElement!.getBoundingClientRect();
+
+    setUnderlineStyle({
+      left: rect.left - parentRect.left,
+      width: rect.width
+    });
+  }
+}, [location.pathname]);
+
 
   return (
     <nav className="w-full bg-white shadow-md sticky top-0 z-50">
@@ -37,16 +61,37 @@ export default function Navbar() {
 
 
         {/* Desktop Links */}
-        <div className="hidden md:flex gap-6 text-gray-700 font-medium">
-          <Link to="/" className="hover:text-[#009632]
- transition">Home</Link>
-          <Link to="/products" className="hover:text-[#009632]
- transition">Products</Link>
-          <Link to="/contact" className="hover:text-[#009632]
- transition">Contact</Link>
-          <Link to="/lookup-order" className="hover:text-[#009632]
- transition">Order Lookup</Link>
-        </div>
+
+<div className="hidden md:flex items-center gap-8 text-gray-700 font-medium relative">
+  {/* Invisible reference container */}
+  <div className="absolute bottom-0 left-0 h-[3px] w-full pointer-events-none"></div>
+
+  {/* Animated Underline */}
+  <span
+    className="absolute bottom-0 h-[3px] bg-[#009632] rounded-full transition-all duration-300 ease-out"
+    style={{
+      width: underlineStyle.width,
+      transform: `translateX(${underlineStyle.left}px)`
+    }}
+  ></span>
+
+  {/* Links */}
+  {menuItems.map((item) => (
+    <button
+      key={item.path}
+      onClick={() => navigate(item.path)}
+      ref={(el) => { linkRefs.current[item.path] = el; }}
+      className={`relative pb-2 transition ${
+        location.pathname === item.path
+          ? "text-[#009632]"
+          : "hover:text-[#009632]"
+      }`}
+    >
+      {item.label}
+    </button>
+  ))}
+</div>
+
 
         {/* Search Bar (hidden on mobile) */}
         <div className="hidden md:flex flex-1 max-w-sm">
@@ -92,16 +137,46 @@ export default function Navbar() {
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#009632]
 "
           />
-          <Link to="/" className="hover:text-[#009632]
- transition" onClick={() => setMobileOpen(false)}>Home</Link>
-          <Link to="/products" className="hover:text-[#009632]
- transition" onClick={() => setMobileOpen(false)}>Products</Link>
-          <Link to="/lookup-order" className="hover:text-[#009632]
- transition" onClick={() => setMobileOpen(false)}>Order Lookup</Link>
-          <Link to="/about" className="hover:text-[#009632]
- transition" onClick={() => setMobileOpen(false)}>About</Link>
-          <Link to="/contact" className="hover:text-[#009632]
- transition" onClick={() => setMobileOpen(false)}>Contact</Link>
+          <Link
+  to="/"
+  className={`${location.pathname === "/" ? "text-[#009632] font-semibold" : ""}`}
+  onClick={() => setMobileOpen(false)}
+>
+  Home
+</Link>
+
+<Link
+  to="/products"
+  className={`${location.pathname === "/products" ? "text-[#009632] font-semibold" : ""}`}
+  onClick={() => setMobileOpen(false)}
+>
+  Products
+</Link>
+
+<Link
+  to="/lookup-order"
+  className={`${location.pathname === "/lookup-order" ? "text-[#009632] font-semibold" : ""}`}
+  onClick={() => setMobileOpen(false)}
+>
+  Order Lookup
+</Link>
+
+<Link
+  to="/about"
+  className={`${location.pathname === "/about" ? "text-[#009632] font-semibold" : ""}`}
+  onClick={() => setMobileOpen(false)}
+>
+  About
+</Link>
+
+<Link
+  to="/contact"
+  className={`${location.pathname === "/contact" ? "text-[#009632] font-semibold" : ""}`}
+  onClick={() => setMobileOpen(false)}
+>
+  Contact
+</Link>
+
         </div>
       )}
     </nav>

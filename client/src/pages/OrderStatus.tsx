@@ -124,10 +124,10 @@ export default function OrderStatusPage() {
         {/* Action Button */}
         <div className="text-center mt-10">
           <Link
-            to="/order-history"
+            to="/lookup-order"
             className="px-6 py-2 bg-[#009632] text-white rounded-lg shadow hover:bg-[#007a29] transition-all"
           >
-            Back to Orders
+            Look up Order
           </Link>
         </div>
       </div>
