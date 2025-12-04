@@ -7,6 +7,8 @@ import productRoutes from "./routes/Products";
 import adminRoutes from "./routes/Admin";
 import authRoutes from "./routes/AuthRoutes";
 import messageRoutes from "./routes/messageRoutes";
+import paymentRoutes from "./routes/PaymentRoute";
+
 
 
 dotenv.config();
@@ -47,6 +49,7 @@ mongoose
 .catch((err) => console.error("❌ MongoDB error:", err));
 
 // ✅ API routes
+app.use("/api/payments", paymentRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/admin", adminRoutes);

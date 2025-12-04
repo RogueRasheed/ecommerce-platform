@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useCart } from "../store/useCart";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL, PAYSTACK_PUBLIC_KEY } from "../config";
 import toast from "react-hot-toast";
 import Loader from "../components/Loader";
 
@@ -28,47 +29,101 @@ export default function CheckoutPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handlePlaceOrder = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+const handlePlaceOrder = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      const items = cart.map((item) => ({
-        productId: item._id,
-        name: item.name,
-        price: item.price,
-        qty: item.quantity || 1,
-      }));
+  try {
+    const items = cart.map((item) => ({
+      productId: item._id,
+      name: item.name,
+      price: item.price,
+      qty: item.quantity || 1,
+    }));
 
-      // Sends all required fields backend expects
-      const response = await fetch("https://ecommerce-platform-jkg6.onrender.com/api/orders", {
+    // Step 1: Place order on backend
+    const orderRes = await fetch(`${API_BASE_URL}/orders`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        customerName: form.customerName,
+        customerEmail: form.customerEmail,
+        customerPhone: form.customerPhone,
+        customerAddress: `${form.customerAddress}, ${form.city}`,
+        paymentMethod: form.paymentMethod,
+        items,
+        total,
+        status: "processing",
+      }),
+    });
+
+    if (!orderRes.ok) throw new Error("Failed to place order");
+    const order = await orderRes.json();
+
+    // Step 2: If Paystack selected, initialize payment via backend
+    if (form.paymentMethod === "paystack") {
+      const payRes = await fetch(`${API_BASE_URL}/paystack/init`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          customerName: form.customerName,
-          customerEmail: form.customerEmail,
-          customerPhone: form.customerPhone,
-          customerAddress: `${form.customerAddress}, ${form.city}`,
-          paymentMethod: form.paymentMethod,
-          items,
-          total,
-          status: "processing",
+          amount: total,
+          email: form.customerEmail,
+          name: form.customerName,
+          phone: form.customerPhone,
+          orderId: order._id,
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to place order");
+      if (!payRes.ok) throw new Error("Failed to initialize Paystack payment");
+      const payData = await payRes.json();
 
-      const order = await response.json();
-      toast.success(`✅ Thanks ${form.customerName}, your order has been placed!`);
-      clearCart();
+      // Open Paystack inline payment
+      const handler = (window as any).PaystackPop.setup({
+        key: PAYSTACK_PUBLIC_KEY,
+        email: form.customerEmail,
+        amount: total * 100, // in kobo
+        ref: payData.reference,
+        callback: async function (response: any) {
+          try {
+            // Step 3: Verify payment on backend
+            const verifyRes = await fetch(`${API_BASE_URL}/paystack/verify/${response.reference}`);
+            const verifyData = await verifyRes.json();
+
+            if (verifyRes.ok) {
+              toast.success(`✅ Payment verified! Ref: ${verifyData.reference}`);
+              navigate(`/orders/${verifyData.orderId}/status`);
+            } else {
+              toast.error("❌ Payment verification failed");
+              console.error(verifyData);
+            }
+          } catch (err) {
+            console.error(err);
+            toast.error("❌ Error verifying payment");
+          }
+        },
+        onClose: function () {
+          toast.error("Payment not completed");
+        },
+      });
+
+      handler.openIframe();
+    } else {
+      toast.success(`✅ Order placed!`);
       navigate(`/orders/${order._id}/status`);
-    } catch (error) {
-      console.error(error);
-      toast.error("❌ Something went wrong while placing your order.");
-    } finally {
-      setLoading(false);
     }
-  };
+
+    clearCart();
+  } catch (err) {
+    console.error(err);
+    toast.error("❌ Something went wrong.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
+
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-12">
@@ -142,7 +197,7 @@ export default function CheckoutPage() {
 
             <div className="border-t mt-4 pt-4 flex justify-between text-lg font-bold">
               <span>Total</span>
-              <span>${total.toFixed(2)}</span>
+              <span>N{total.toFixed(2)}</span>
             </div>
           </div>
 
@@ -205,9 +260,7 @@ export default function CheckoutPage() {
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#009632]"
             >
               <option value="">Select Payment Method</option>
-              <option value="card">Paystack</option>
-              <option value="paypal">Flutterwave</option>
-              <option value="cod">Cash on Delivery</option>
+              <option value="paystack">Paystack</option>
             </select>
 
             <button

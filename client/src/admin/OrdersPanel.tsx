@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import API_BASE_URL from "../config";
+import {API_BASE_URL} from "../config";
 
 type Order = {
   _id: string;

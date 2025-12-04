@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import API_BASE_URL from "../config";
+import {API_BASE_URL} from "../config";
 
 type DashboardStats = {
   totalOrders: number;

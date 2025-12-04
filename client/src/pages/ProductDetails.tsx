@@ -1,7 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useCart } from "../store/useCart";
-import API_BASE_URL from "../config";
+import {API_BASE_URL} from "../config";
 
 type Product = {
   _id: string;
