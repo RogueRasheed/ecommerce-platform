@@ -1,7 +1,13 @@
-// server/controllers/paystackController.ts
+// server/controllers/paymentController.ts
+
 import axios from "axios";
 import { Request, Response } from "express";
-import Order from "../models/Order";
+import Order from "../models/Order"; 
+
+// Your Secret Key is safely accessed here
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+
+// initializePayment (Remains correct)
 
 export const initializePayment = async (req: Request, res: Response) => {
   const { amount, email, name, phone, orderId } = req.body;
@@ -14,12 +20,10 @@ export const initializePayment = async (req: Request, res: Response) => {
     const body = {
       email,
       amount: amount * 100, // convert Naira to kobo
+      // Creates the unique reference that includes the MongoDB Order ID
       reference: `ORD-${orderId}-${Date.now()}`,
       callback_url: `https://ecommerce-platform-eight.vercel.app/orders/${orderId}/status`,
-      metadata: {
-        name,
-        phone,
-      },
+      metadata: { name, phone },
     };
 
     const response = await axios.post(
@@ -27,13 +31,14 @@ export const initializePayment = async (req: Request, res: Response) => {
       body,
       {
         headers: {
-          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
           "Content-Type": "application/json",
         },
       }
     );
 
     if (!response.data.status) {
+      console.error("❌ Paystack init failed:", response.data);
       return res.status(400).json({ error: "Failed to initialize transaction" });
     }
 
@@ -47,6 +52,9 @@ export const initializePayment = async (req: Request, res: Response) => {
   }
 };
 
+// -----------------------------------------------------------
+// verifyPayment (CORRECTED property name)
+// -----------------------------------------------------------
 
 export const verifyPayment = async (req: Request, res: Response) => {
   const { reference } = req.params;
@@ -56,46 +64,67 @@ export const verifyPayment = async (req: Request, res: Response) => {
   }
 
   try {
-    // Verify transaction with Paystack
+    // 1. Verify transaction with Paystack using the Secret Key
     const response = await axios.get(
       `https://api.paystack.co/transaction/verify/${reference}`,
       {
         headers: {
-          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
         },
       }
     );
 
-    const data = response.data;
+    const paystackData = response.data.data;
 
-    if (!data.status || data.data.status !== "success") {
-      return res.status(400).json({ error: "Payment not successful" });
+    if (!response.data.status || paystackData.status !== "success") {
+      console.warn("⚠️ Paystack status check failed:", paystackData);
+      return res.status(400).json({ error: "Payment not successful or verification failed" });
     }
 
-    // Extract order ID from reference (assuming format is orderId-{timestamp})
-    // If you used order._id directly as reference, you can just use it directly
-    const orderId = reference; // or data.data.reference if it matches frontend
+    // 2. Extract the MongoDB Order ID from the unique reference
+    const parts = reference.split('-'); 
+    const orderId = parts.length > 1 ? parts[1] : reference;
 
+    // Use Order.findById which now includes type safety thanks to IOrder
     const order = await Order.findById(orderId);
 
     if (!order) {
-      return res.status(404).json({ error: "Order not found" });
+      console.error(`Order not found for ID: ${orderId}`);
+      return res.status(404).json({ error: "Order not found in database" });
     }
 
-    // Update order status if not already successful
+    // 3. 🚨 CRITICAL SECURITY CHECK: Compare Amount
+    const paidAmountKobo = paystackData.amount; // Amount from Paystack (in kobo)
+    
+    // 🔥🔥 FIXED: Using order.total to match your Mongoose Schema 🔥🔥
+    const expectedAmountKobo = order.total * 100; 
+
+    if (paidAmountKobo !== expectedAmountKobo) {
+        console.error(`Amount mismatch! Order ID: ${orderId}. Paid: ${paidAmountKobo}, Expected: ${expectedAmountKobo}`);
+        return res.status(400).json({ 
+            error: "Amount paid does not match the expected order amount. Security flag raised."
+        });
+    }
+
+    // 4. Fulfill the Order (Only if not already successful)
     if (order.status !== "successful") {
       order.status = "successful";
+      order.paymentReference = reference; 
       await order.save();
     }
 
     return res.json({
       message: "Payment verified successfully",
       orderId: order._id,
-      amount: data.data.amount / 100, // back to Naira
-      reference: data.data.reference,
+      amount: paystackData.amount / 100, // back to Naira for display
+      reference: paystackData.reference,
     });
+  
   } catch (err) {
-    console.error("❌ Paystack verify error:", err);
-    return res.status(500).json({ error: "Verification failed" });
+    // Check if the error object has a 'message' property
+    const message = (err as { message?: string })?.message || "Unknown error";
+
+    console.error("❌ Paystack verify error:", message);
+    return res.status(500).json({ error: "Verification failed due to a server or network error" });
   }
 };

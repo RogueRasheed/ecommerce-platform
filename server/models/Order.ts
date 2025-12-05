@@ -14,6 +14,7 @@ export interface IOrder extends Document {
   customerAddress: string;
   items: OrderItem[];
   total: number;
+  paymentReference?: string;
   status: "processing" | "successful" | "failed" | "delivered" | "cancelled" | "shipped" | "pending";
   createdAt: Date;
 }
