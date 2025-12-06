@@ -19,7 +19,6 @@ interface CheckoutFormState {
 // Define the expected structure of the Order response from the backend
 interface OrderResponse {
   _id: string;
-  // ... other order properties you might receive
 }
 
 // Define the expected structure of the Paystack initialization response
