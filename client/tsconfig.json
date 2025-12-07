@@ -9,7 +9,7 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "commonjs",
+    "module": "ESNext",
     "moduleResolution": "node", // 🔑 fixes Vercel resolution issues
     "resolveJsonModule": true,
     "isolatedModules": true,
