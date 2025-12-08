@@ -24,6 +24,12 @@ export const initializePayment = async (req: Request, res: Response) => {
       metadata: { name, phone },
     };
 
+    console.log("ENV DEBUG:", {
+  SECRET: PAYSTACK_SECRET_KEY ? "Loaded" : "MISSING",
+  KEY_START: PAYSTACK_SECRET_KEY?.substring(0, 5)
+});
+
+
     const response = await axios.post(
       "https://api.paystack.co/transaction/initialize",
       body,
