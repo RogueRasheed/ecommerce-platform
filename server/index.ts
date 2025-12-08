@@ -13,6 +13,8 @@ import paymentRoutes from "./routes/PaymentRoute";
 
 dotenv.config();
 
+console.log("ENV CHECK KEY:", process.env.PAYSTACK_SECRET_KEY);
+
 const app = express();
 const port = process.env.PORT || 3000;
 

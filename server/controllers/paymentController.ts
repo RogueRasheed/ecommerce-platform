@@ -1,7 +1,7 @@
-
 import axios from "axios";
 import { Request, Response } from "express";
 import Order from "../models/Order"; 
+import dotenv from "dotenv";
 
 // Your Secret Key is safely accessed here
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
