@@ -4,11 +4,12 @@ import Order from "../models/Order";
 import dotenv from "dotenv";
 
 // Your Secret Key is safely accessed here
-const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+const secretkey = process.env.PAYSTACK_SECRET_KEY;
 
 // -----------------------------------------------------------
 export const initializePayment = async (req: Request, res: Response) => {
   const { amount, email, name, phone, orderId } = req.body;
+  const secretkey = process.env.PAYSTACK_SECRET_KEY;
 
   if (!amount || !email || !name || !phone || !orderId) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -25,8 +26,8 @@ export const initializePayment = async (req: Request, res: Response) => {
     };
 
     console.log("ENV DEBUG:", {
-  SECRET: PAYSTACK_SECRET_KEY ? "Loaded" : "MISSING",
-  KEY_START: PAYSTACK_SECRET_KEY?.substring(0, 5)
+  SECRET: secretkey ? "Loaded" : "MISSING",
+  KEY_START: secretkey?.substring(0, 5)
 });
 
 
@@ -35,7 +36,7 @@ export const initializePayment = async (req: Request, res: Response) => {
       body,
       {
         headers: {
-          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+          Authorization: `Bearer ${secretkey}`,
           "Content-Type": "application/json",
         },
       }
@@ -62,7 +63,7 @@ export const initializePayment = async (req: Request, res: Response) => {
 
 export const verifyPayment = async (req: Request, res: Response) => {
   const { reference } = req.params;
-
+  const secretkey = process.env.PAYSTACK_SECRET_KEY;
   if (!reference) {
     return res.status(400).json({ error: "Reference is required" });
   }
@@ -73,7 +74,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
       `https://api.paystack.co/transaction/verify/${reference}`,
       {
         headers: {
-          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+          Authorization: `Bearer ${secretkey}`,
         },
       }
     );
