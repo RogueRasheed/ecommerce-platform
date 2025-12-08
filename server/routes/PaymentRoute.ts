@@ -1,4 +1,4 @@
-// server/routes/paystack.ts
+
 import express, { Request, Response } from "express";
 import { verifyPayment, initializePayment } from "../controllers/paymentController";
 

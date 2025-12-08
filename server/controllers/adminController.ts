@@ -66,7 +66,7 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
     const order = await Order.findById(id);
     if (!order) return res.status(404).json({ message: "Order not found" });
 
-    order.status = status;
+    order.paymentStatus = status;
     await order.save();
 
     res.json({ message: "Order status updated successfully", order });
@@ -82,7 +82,7 @@ export const cancelOrder = async (req: Request, res: Response) => {
     const order = await Order.findById(id);
     if (!order) return res.status(404).json({ message: "Order not found" });
 
-    order.status = "cancelled";
+    order.paymentStatus = "cancelled";
     await order.save();
 
     res.json({ message: "Order cancelled successfully", order });
@@ -98,7 +98,7 @@ export const markOrderDelivered = async (req: Request, res: Response) => {
     const order = await Order.findById(id);
     if (!order) return res.status(404).json({ message: "Order not found" });
 
-    order.status = "delivered";
+    order.paymentStatus = "delivered";
     await order.save();
 
     res.json({ message: "Order marked as delivered", order });
@@ -114,11 +114,11 @@ export const shipOrder = async (req: Request, res: Response) => {
     const order = await Order.findById(id);
     if (!order) return res.status(404).json({ message: "Order not found" });
 
-    if (order.status !== "pending") {
+    if (order.paymentStatus !== "pending") {
       return res.status(400).json({ message: "Only pending orders can be shipped" });
     }
 
-    order.status = "shipped";
+    order.paymentStatus = "shipped";
     await order.save();
 
     res.json({ message: "Order marked as shipped", order });

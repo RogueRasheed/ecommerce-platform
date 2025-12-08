@@ -1,4 +1,3 @@
-// server/controllers/paymentController.ts
 
 import axios from "axios";
 import { Request, Response } from "express";
@@ -7,8 +6,7 @@ import Order from "../models/Order";
 // Your Secret Key is safely accessed here
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
 
-// initializePayment (Remains correct)
-
+// -----------------------------------------------------------
 export const initializePayment = async (req: Request, res: Response) => {
   const { amount, email, name, phone, orderId } = req.body;
 
@@ -107,8 +105,8 @@ export const verifyPayment = async (req: Request, res: Response) => {
     }
 
     // 4. Fulfill the Order (Only if not already successful)
-    if (order.status !== "successful") {
-      order.status = "successful";
+    if (order.paymentStatus !== "successful") {
+      order.paymentStatus = "successful";
       order.paymentReference = reference; 
       await order.save();
     }
