@@ -9,7 +9,7 @@ console.log("🔥 Webhook hit!", req.headers);
 
 try {
     const secret = process.env.PAYSTACK_SECRET_KEY;
-    const rawBody = req.body;
+    const rawBody = req.body.toString();
     // 1. Verify signature using RAW body
     const hash = crypto
       .createHmac("sha512", secret as string)
