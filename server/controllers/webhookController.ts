@@ -5,18 +5,15 @@ import Order from "../models/Order";
 
 export const handlePaystackWebhook = async (req: Request, res: Response) => {
 
-console.log("🔥 Webhook hit!", {
-  headers: req.headers,
-  rawBody: req.body instanceof Buffer ? req.body.toString() : req.body
-});
+console.log("🔥 Webhook hit!", req.headers);
 
 try {
     const secret = process.env.PAYSTACK_SECRET_KEY;
-    const payload = req.body;
+    const rawBody = req.body;
     // 1. Verify signature using RAW body
     const hash = crypto
       .createHmac("sha512", secret as string)
-      .update(payload)
+      .update(rawBody)
       .digest("hex");
 
     if (hash !== req.headers["x-paystack-signature"]) {
@@ -25,7 +22,7 @@ try {
     }
 
     // 2. Parse JSON normally
-    const event = JSON.parse(payload.toString());
+    const event = JSON.parse(rawBody.toString());
 
     console.log("🔥 Paystack Webhook Event:", event.event);
 
