@@ -22,7 +22,7 @@ try {
     }
 
     // 2. Parse JSON normally
-    const event = JSON.parse(rawBody.toString());
+    const event = JSON.parse(rawBody);
 
     console.log("🔥 Paystack Webhook Event:", event.event);
 
