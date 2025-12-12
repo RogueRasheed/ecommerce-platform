@@ -35,14 +35,23 @@ app.use(
   })
 );
 
-// 1️⃣ Global JSON parser (must be before all normal routes)
-app.use(express.json());
-
 // MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI as string)
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ MongoDB error:", err));
+
+  
+  // 3️⃣ Webhook (RAW body) 
+  app.post(
+    "/api/paystack/webhook",
+    express.raw({ type: "application/json" }),
+    handlePaystackWebhook
+  );
+
+  // 1️⃣ Global JSON parser (must be before all normal routes)
+  app.use(express.json());
+
 
 // 2️⃣ Normal API routes
 app.use("/api/payments", paymentRoutes);
@@ -52,12 +61,6 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/message", messageRoutes);
 
-// 3️⃣ Webhook (RAW body) — MUST be last
-app.post(
-  "/api/paystack/webhook",
-  express.raw({ type: "application/json" }),
-  handlePaystackWebhook
-);
 
 app.listen(port, () => {
   console.log(`API running at http://localhost:${port}`);
