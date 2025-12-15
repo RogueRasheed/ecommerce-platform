@@ -4,7 +4,11 @@ import jwt from "jsonwebtoken";
 import Admin from "../models/Admin";
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key"; // ✅ store in .env later
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error("JWT_SECRET not configured");
+}
 
 
 router.get("/test", (req, res) => {
@@ -44,7 +48,7 @@ router.post("/login", async (req, res) => {
 
    const token = jwt.sign(
   { id: admin._id, username: admin.username },
-  process.env.JWT_SECRET as string,
+  JWT_SECRET,
   { expiresIn: "7d" }
 );
 
