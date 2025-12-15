@@ -18,7 +18,12 @@ export default function verifyAdmin(req: Request, res: Response, next: NextFunct
     const token = authHeader.split(" ")[1];
     console.log("🪪 Received token:", token);
 
-    const secret = process.env.JWT_SECRET as string;
+    const secret = process.env.JWT_SECRET;
+
+    if (!secret) {
+      throw new Error("JWT_SECRET not configured");
+    }
+
     const decoded = jwt.verify(token, secret) as JwtPayload;
     console.log("✅ Decoded token:", decoded);
 
@@ -30,7 +35,12 @@ export default function verifyAdmin(req: Request, res: Response, next: NextFunct
     (req as any).user = decoded;
     next();
   } catch (err: any) {
-    console.error("❌ verifyAdmin error:", err.message);
-    return res.status(500).json({ message: "Server error", error: err.message });
+  console.error("❌ verifyAdmin error:", err.message);
+
+  if (err.name === "JsonWebTokenError" || err.name === "TokenExpiredError") {
+    return res.status(401).json({ message: "Invalid or expired token" });
+  }
+
+  return res.status(500).json({ message: "Server error" });
   }
 }

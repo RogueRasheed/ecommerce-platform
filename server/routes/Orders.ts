@@ -40,13 +40,18 @@ router.post("/", async (req: Request, res: Response) => {
     }
 
     const order = new Order({
-      customerName,
-      customerEmail,
-      customerPhone,
-      customerAddress,
-      items: orderItems,
-      total,
-    });
+        customerName,
+        customerEmail,
+        customerPhone,
+        customerAddress,
+        items: orderItems,
+        total,
+
+        // 🔐 REQUIRED DEFAULTS
+        paymentStatus: "pending",
+        orderStatus: "processing",
+      });
+
 
     await order.save();
     res.status(201).json(order);
@@ -109,32 +114,32 @@ router.get("/lookup/customer", async (req: Request, res: Response) => {
 
 
 // ✅ Update order status (restricted)
-router.patch("/:id/status", async (req: Request, res: Response) => {
-  const { status } = req.body;
-  const allowedStatuses = ["processing", "successful", "failed", "delivered", "cancelled", "shipped"];
+// router.patch("/:id/status", async (req: Request, res: Response) => {
+//   const { status } = req.body;
+//   const allowedStatuses = ["processing", "successful", "failed", "delivered", "cancelled", "shipped"];
 
-  if (!allowedStatuses.includes(status)) {
-    return res.status(400).json({ error: "Invalid status value" });
-  }
+//   if (!allowedStatuses.includes(status)) {
+//     return res.status(400).json({ error: "Invalid status value" });
+//   }
 
-  try {
-    // Update the status
-    await Order.updateOne({ _id: req.params.id }, { $set: { status } });
+//   try {
+//     // Update the status
+//     await Order.updateOne({ _id: req.params.id }, { $set: { status } });
 
-    // Fetch the full order with populated items
-    const order = await Order.findById(req.params.id).populate(
-      "items.productId",
-      "name price"
-    );
+//     // Fetch the full order with populated items
+//     const order = await Order.findById(req.params.id).populate(
+//       "items.productId",
+//       "name price"
+//     );
 
-    if (!order) return res.status(404).json({ error: "Order not found" });
+//     if (!order) return res.status(404).json({ error: "Order not found" });
 
-    res.json(order);
-  } catch (err) {
-    console.error("❌ Failed to update order status:", err);
-    res.status(400).json({ error: "Failed to update status" });
-  }
-});
+//     res.json(order);
+//   } catch (err) {
+//     console.error("❌ Failed to update order status:", err);
+//     res.status(400).json({ error: "Failed to update status" });
+//   }
+// });
 
 router.patch("/:id/hide", async (req: Request, res: Response) => {
   try {

@@ -1,5 +1,5 @@
 import express from "express";
-import { updateOrderStatus, getAllOrders, markOrderDelivered, cancelOrder, shipOrder, getDashboardStats, getOrderById } from "../controllers/adminController";
+import { updateOrderStatus, getAllOrders, cancelOrder,  getDashboardStats, getOrderById } from "../controllers/adminController";
 import  verifyAdmin  from "../middleware/verifyAdmin";
 
 const router = express.Router();
@@ -11,9 +11,7 @@ router.get("/orders", verifyAdmin, getAllOrders);
 router.put("/orders/:id/status", verifyAdmin, updateOrderStatus);
 
 router.get("/orders/:id", verifyAdmin, getOrderById);
-router.put("/orders/:id/ship", verifyAdmin, shipOrder);
 router.put("/orders/:id/cancel", verifyAdmin, cancelOrder);
-router.put("/orders/:id/deliver", verifyAdmin, markOrderDelivered);
 router.get("/dashboard/stats", verifyAdmin, getDashboardStats);
 
 

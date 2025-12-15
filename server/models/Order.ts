@@ -21,10 +21,12 @@ export interface IOrder extends Document {
     | "pending"
     | "processing"
     | "successful"
-    | "failed"
+    | "failed";
+  orderStatus:
+    | "processing"
+    | "shipped"
     | "delivered"
-    | "cancelled"
-    | "shipped";
+    | "cancelled";
   paidAt?: Date;
   paymentData?: Record<string, unknown>; // raw Paystack verify response
   metadata?: Record<string, unknown>; // extra information (split, etc.)
@@ -62,9 +64,16 @@ const OrderSchema: Schema = new Schema(
     // 'pending' before payment, 'successful' after verify
     paymentStatus: {
       type: String,
-      enum: ["pending", "processing", "successful", "failed", "delivered", "cancelled", "shipped"],
+      enum: ["pending", "successful", "failed"],
       default: "pending",
     },
+
+    orderStatus: {
+      type: String,
+      enum: [ "processing", "shipped", "delivered", "cancelled"],
+      default: "processing",
+    },
+
 
     paidAt: { type: Date },
 
