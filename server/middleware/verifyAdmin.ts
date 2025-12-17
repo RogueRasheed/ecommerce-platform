@@ -18,7 +18,7 @@ export default function verifyAdmin(req: Request, res: Response, next: NextFunct
     const token = authHeader.split(" ")[1];
     console.log("🪪 Received token:", token);
 
-    const secret = process.env.JWT_SECRET;
+    const secret = process.env.JWT_SECRET as string;
 
     if (!secret) {
       throw new Error("JWT_SECRET not configured");

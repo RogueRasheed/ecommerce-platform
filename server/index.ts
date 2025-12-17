@@ -13,6 +13,9 @@ import paymentRoutes from "./routes/PaymentRoute";
 import { handlePaystackWebhook } from "./controllers/webhookController";
 
 dotenv.config();
+  console.log("JWT_SECRET:", process.env.JWT_SECRET);
+
+
 
 const app = express();
 const port = process.env.PORT || 3000;

@@ -4,12 +4,11 @@ import jwt from "jsonwebtoken";
 import Admin from "../models/Admin";
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET as string;
 
 if (!JWT_SECRET) {
-  throw new Error("JWT_SECRET not configured");
+  console.warn("JWT_SECRET not configured");
 }
-
 
 router.get("/test", (req, res) => {
   res.send("✅ Auth route working!");
