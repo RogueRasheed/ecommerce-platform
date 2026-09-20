@@ -5,7 +5,7 @@ const validOrderStatuses = ["processing", "shipped", "delivered", "cancelled"];
 
 // 📦 Get single order
 export const getOrderById = async (req: Request, res: Response) => {
-  const order = await Order.findById(req.params.id).populate("items.productId");
+  const order = await Order.findById(req.params.id);
   if (!order) return res.status(404).json({ message: "Order not found" });
 
   res.json({ order });
@@ -20,7 +20,7 @@ export const getAllOrders = async (req: Request, res: Response) => {
     filter.orderStatus = orderStatus;
   }
 
-  const orders = await Order.find(filter).populate("items.productId");
+  const orders = await Order.find(filter);
   res.json({ orders });
 };
 

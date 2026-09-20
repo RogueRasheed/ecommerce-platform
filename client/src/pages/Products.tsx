@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import useSearch from "../utils/SearchHook";
 import ProductCard from "../components/ProductCard";
-import {API_BASE_URL} from "../config";
+import { sanity, ALL_PRODUCTS_QUERY, toProduct } from "../lib/sanity";
 import Loader from "../components/Loader";
 
 type Product = {
@@ -22,9 +22,8 @@ export default function Products() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const res = await fetch(`${API_BASE_URL}/products`);
-        const data = await res.json();
-        setProducts(data);
+        const docs = await sanity.fetch(ALL_PRODUCTS_QUERY);
+        setProducts(docs.map(toProduct));
       } catch (err) {
         console.error("Failed to fetch products:", err);
       } finally {

@@ -1,7 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useCart } from "../store/useCart";
-import {API_BASE_URL} from "../config";
+import { sanity, PRODUCT_BY_ID_QUERY, toProduct } from "../lib/sanity";
 
 type Product = {
   _id: string;
@@ -22,10 +22,9 @@ export default function ProductDetails() {
   useEffect(() => {
     async function fetchProduct() {
       try {
-        const res = await fetch(`${API_BASE_URL}/products/${id}`);
-        if (!res.ok) throw new Error("Failed to fetch product");
-        const data = await res.json();
-        setProduct(data);
+        const doc = await sanity.fetch(PRODUCT_BY_ID_QUERY, { id });
+        if (!doc) throw new Error("Product not found");
+        setProduct(toProduct(doc));
       } catch (err) {
         console.error("❌ Error fetching product:", err);
       } finally {

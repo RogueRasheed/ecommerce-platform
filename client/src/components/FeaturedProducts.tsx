@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import {API_BASE_URL} from "../config";
+import { sanity, ALL_PRODUCTS_QUERY, toProduct } from "../lib/sanity";
 import ProductCard from "../components/ProductCard";
 import Loader from "./Loader";
 
@@ -21,9 +21,8 @@ export default function FeaturedProducts() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const res = await fetch(`${API_BASE_URL}/products`);
-        const data = await res.json();
-        setProducts(data);
+        const docs = await sanity.fetch(ALL_PRODUCTS_QUERY);
+        setProducts(docs.map(toProduct));
       } catch (err) {
         console.error("❌ Failed to fetch products", err);
       } finally {

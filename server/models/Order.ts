@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface OrderItem {
-  productId: mongoose.Types.ObjectId;
+  productId: string; // Sanity document _id, no longer a Mongo ObjectId
   name: string;
   price: number;
   qty: number;
@@ -44,7 +44,7 @@ const OrderSchema: Schema = new Schema(
 
     items: [
       {
-        productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+        productId: { type: String, required: true }, // Sanity document _id
         name: { type: String, required: true },
         price: { type: Number, required: true },
         qty: { type: Number, required: true },

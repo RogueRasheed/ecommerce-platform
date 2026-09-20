@@ -1,10 +1,10 @@
 import { Router, Request, Response } from "express";
 import Order from "../models/Order";
-import { Product } from "../models/Products";
+import { sanity } from "../sanityClient";
 
 const router = Router();
 
-// ✅ Create order with product + stock validation
+// ✅ Create order with product + stock validation (now against Sanity)
 router.post("/", async (req: Request, res: Response) => {
   try {
     const { customerName, customerEmail, customerPhone, customerAddress, items } = req.body;
@@ -17,7 +17,12 @@ router.post("/", async (req: Request, res: Response) => {
     const orderItems = [];
 
     for (const item of items) {
-      const product = await Product.findById(item.productId);
+      // Never trust price/name from the client — re-fetch from Sanity.
+      const product = await sanity.fetch(
+        `*[_type == "product" && _id == $id][0]{_id, name, price, stock}`,
+        { id: item.productId }
+      );
+
       if (!product) {
         return res.status(404).json({ error: `Product not found: ${item.productId}` });
       }
@@ -25,9 +30,6 @@ router.post("/", async (req: Request, res: Response) => {
       if (product.stock < item.qty) {
         return res.status(400).json({ error: `Not enough stock for ${product.name}` });
       }
-
-      product.stock -= item.qty;
-      await product.save();
 
       total += product.price * item.qty;
 
@@ -40,20 +42,34 @@ router.post("/", async (req: Request, res: Response) => {
     }
 
     const order = new Order({
-        customerName,
-        customerEmail,
-        customerPhone,
-        customerAddress,
-        items: orderItems,
-        total,
+      customerName,
+      customerEmail,
+      customerPhone,
+      customerAddress,
+      items: orderItems,
+      total,
 
-        // 🔐 REQUIRED DEFAULTS
-        paymentStatus: "pending",
-        orderStatus: "processing",
-      });
-
+      // 🔐 REQUIRED DEFAULTS
+      paymentStatus: "pending",
+      orderStatus: "processing",
+    });
 
     await order.save();
+
+    // Decrement stock in Sanity for each item now that the order is saved.
+    // (Runs after save so a DB failure doesn't leave stock wrongly reduced.)
+    await Promise.all(
+      orderItems.map((item) =>
+        sanity
+          .patch(item.productId)
+          .dec({ stock: item.qty })
+          .commit()
+          .catch((err: unknown) =>
+            console.error(`⚠️ Failed to decrement stock for ${item.productId}:`, err)
+          )
+      )
+    );
+
     res.status(201).json(order);
   } catch (err) {
     console.error("❌ Error creating order:", err);
@@ -63,18 +79,16 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-
 // ✅ Get all orders
 router.get("/", async (_req: Request, res: Response) => {
-  const orders = await Order.find().populate("items.productId", "name price");
+  const orders = await Order.find();
   res.json(orders);
 });
-
 
 // ✅ Get order by ID
 router.get("/:id", async (req: Request, res: Response) => {
   try {
-    const order = await Order.findById(req.params.id).populate("items.productId", "name price");
+    const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ error: "Order not found" });
     res.json(order);
   } catch {
@@ -82,8 +96,7 @@ router.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
-
-// ✅ NEW: Get all orders by customer email or phone (for order history page)
+// ✅ Get all orders by customer email or phone (for order history page)
 router.get("/lookup/customer", async (req: Request, res: Response) => {
   try {
     const { email, phone } = req.query;
@@ -96,9 +109,7 @@ router.get("/lookup/customer", async (req: Request, res: Response) => {
     if (email) query.$or.push({ customerEmail: email });
     if (phone) query.$or.push({ customerPhone: phone });
 
-    const orders = await Order.find(query)
-      .populate("items.productId", "name price")
-      .sort({ createdAt: -1 });
+    const orders = await Order.find(query).sort({ createdAt: -1 });
 
     if (orders.length === 0) {
       return res.status(404).json({ message: "No orders found for this customer" });
@@ -110,36 +121,6 @@ router.get("/lookup/customer", async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to fetch order history" });
   }
 });
-
-
-
-// ✅ Update order status (restricted)
-// router.patch("/:id/status", async (req: Request, res: Response) => {
-//   const { status } = req.body;
-//   const allowedStatuses = ["processing", "successful", "failed", "delivered", "cancelled", "shipped"];
-
-//   if (!allowedStatuses.includes(status)) {
-//     return res.status(400).json({ error: "Invalid status value" });
-//   }
-
-//   try {
-//     // Update the status
-//     await Order.updateOne({ _id: req.params.id }, { $set: { status } });
-
-//     // Fetch the full order with populated items
-//     const order = await Order.findById(req.params.id).populate(
-//       "items.productId",
-//       "name price"
-//     );
-
-//     if (!order) return res.status(404).json({ error: "Order not found" });
-
-//     res.json(order);
-//   } catch (err) {
-//     console.error("❌ Failed to update order status:", err);
-//     res.status(400).json({ error: "Failed to update status" });
-//   }
-// });
 
 router.patch("/:id/hide", async (req: Request, res: Response) => {
   try {
@@ -157,6 +138,5 @@ router.patch("/:id/hide", async (req: Request, res: Response) => {
     res.status(400).json({ error: "Failed to hide order" });
   }
 });
-
 
 export default router;
