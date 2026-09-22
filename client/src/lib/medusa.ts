@@ -84,11 +84,9 @@ export async function fetchProductById(id: string) {
   return toProduct(product as MedusaProduct);
 }
 
-// Add these to the BOTTOM of client/src/lib/medusa.ts
-// (keep everything already in that file — this is an addition, not a replacement)
 
 export type MedusaCartItem = {
-  id: string; // line item id — needed to update/remove this specific line
+  id: string; 
   variantId: string;
   productId: string;
   name: string;
