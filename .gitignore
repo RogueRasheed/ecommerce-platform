@@ -25,6 +25,8 @@ server/.vite/
 # Environment variables 
 *.env
 *.env.*
+*.vite-end.d.ts
+vite-env.d.ts
 
 # Editor / system files
 .vscode/

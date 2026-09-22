@@ -10,7 +10,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
-    "moduleResolution": "node", // 🔑 fixes Vercel resolution issues
+    "moduleResolution": "bundler", // 🔑 fixes Vercel resolution issues
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,

@@ -1,7 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useCart } from "../store/useCart";
-import { sanity, PRODUCT_BY_ID_QUERY, toProduct } from "../lib/sanity";
+import { fetchProductById } from "../lib/medusa";
 
 type Product = {
   _id: string;
@@ -10,7 +10,6 @@ type Product = {
   price: number;
   image: string;
   category?: string;
-  stock: number;
 };
 
 export default function ProductDetails() {
@@ -22,9 +21,9 @@ export default function ProductDetails() {
   useEffect(() => {
     async function fetchProduct() {
       try {
-        const doc = await sanity.fetch(PRODUCT_BY_ID_QUERY, { id });
-        if (!doc) throw new Error("Product not found");
-        setProduct(toProduct(doc));
+        if (!id) throw new Error("No product id in URL");
+        const item = await fetchProductById(id);
+        setProduct(item);
       } catch (err) {
         console.error("❌ Error fetching product:", err);
       } finally {
@@ -63,11 +62,7 @@ export default function ProductDetails() {
         </p>
 
         <p className="mb-6">
-          {product.stock > 0 ? (
-            <span className="text-green-600 font-medium">✅ In Stock</span>
-          ) : (
-            <span className="text-red-600 font-medium">❌ Out of Stock</span>
-          )}
+          <span className="text-green-600 font-medium">✅ In Stock</span>
         </p>
 
         <div className="flex gap-4">

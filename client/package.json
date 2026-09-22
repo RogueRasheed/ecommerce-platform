@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2.7",
+    "@medusajs/js-sdk": "^2.21.0",
     "@paystack/inline-js": "^2.22.7",
     "@sanity/client": "^8.6.1",
     "@sanity/image-url": "^2.1.1",

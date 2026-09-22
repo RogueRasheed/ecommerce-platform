@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import useSearch from "../utils/SearchHook";
 import ProductCard from "../components/ProductCard";
-import { sanity, ALL_PRODUCTS_QUERY, toProduct } from "../lib/sanity";
+import { fetchAllProducts } from "../lib/medusa";
 import Loader from "../components/Loader";
 
 type Product = {
@@ -10,8 +10,8 @@ type Product = {
   price: number;
   description: string;
   image: string;
-  category: string;
-  stock: number;
+  category?: string;
+  stock?: number;
 };
 
 export default function Products() {
@@ -22,8 +22,8 @@ export default function Products() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const docs = await sanity.fetch(ALL_PRODUCTS_QUERY);
-        setProducts(docs.map(toProduct));
+        const items = await fetchAllProducts();
+        setProducts(items);
       } catch (err) {
         console.error("Failed to fetch products:", err);
       } finally {
@@ -37,7 +37,7 @@ export default function Products() {
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.category.toLowerCase().includes(searchQuery.toLowerCase())
+    (product.category ?? "").toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   if (loading) {

@@ -4,6 +4,7 @@
     "lib": ["ES2023"],
     "module": "CommonJS",
     "moduleResolution": "node",
+    "ignoreDeprecations": "6.0",
     "outDir": "./dist",
     "rootDir": "./",
     "strict": true,

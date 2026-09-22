@@ -8,7 +8,6 @@ type Product = {
   description: string;
   price: number;
   image: string;
-  stock: number;
 };
 
 export default function ProductCard({ product }: { product: Product }) {

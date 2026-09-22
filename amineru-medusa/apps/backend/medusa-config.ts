@@ -12,5 +12,23 @@ module.exports = defineConfig({
       jwtSecret: process.env.JWT_SECRET,
       cookieSecret: process.env.COOKIE_SECRET,
     }
-  }
+  },
+
+   modules: [
+    {
+      resolve: "@medusajs/medusa/payment",
+      options: {
+        providers: [
+          {
+            resolve: "medusa-payment-paystack",
+            id: "paystack",
+            options: {
+              secret_key: process.env.PAYSTACK_SECRET_KEY,
+            },
+          },
+        ],
+      },
+    },
+  ],
+
 })
