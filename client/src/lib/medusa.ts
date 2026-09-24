@@ -54,13 +54,15 @@ async function getRegionId(): Promise<string> {
 // Shape the frontend already expects, built from a raw Medusa product.
 export function toProduct(p: MedusaProduct) {
   const variant = p.variants?.[0];
-  const amountInKobo = variant?.calculated_price?.calculated_amount ?? 0;
+  // Medusa v2 stores prices in whole currency units (₦5,000 is stored as 5000),
+  // so the amount can be used as-is. Do NOT divide by 100 here.
+  const amount = variant?.calculated_price?.calculated_amount ?? 0;
 
   return {
     _id: p.id,
     name: p.title,
     description: p.description ?? "",
-    price: amountInKobo / 100, // Medusa stores kobo, convert back to Naira
+    price: amount,
     image: p.thumbnail || p.images?.[0]?.url || "",
     variantId: variant?.id, // needed later for adding to cart
   };
@@ -133,12 +135,12 @@ function mapCart(cart: MedusaCartResponse): MedusaCartSummary {
       productId: item.product_id,
       name: item.product_title,
       image: item.thumbnail,
-      price: item.unit_price / 100,
+      price: item.unit_price,
       quantity: item.quantity,
     })),
-    subtotal: (cart.item_subtotal ?? 0) / 100,
-    shippingTotal: (cart.shipping_total ?? 0) / 100,
-    total: (cart.total ?? 0) / 100,
+    subtotal: cart.item_subtotal ?? 0,
+    shippingTotal: cart.shipping_total ?? 0,
+    total: cart.total ?? 0,
   };
 }
 

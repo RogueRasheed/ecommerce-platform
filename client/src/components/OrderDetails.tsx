@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config";
 
 type OrderItem = {
   productId: string;
@@ -29,7 +30,7 @@ export default function OrderDetails() {
     const fetchOrder = async () => {
       try {
         const res = await fetch(
-          `https://ecommerce-platform-jkg6.onrender.com/api/orders/${id}`
+          `${API_BASE_URL}/orders/${id}`
         );
         if (!res.ok) throw new Error("Order not found");
         const data = await res.json();

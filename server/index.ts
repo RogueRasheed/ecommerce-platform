@@ -13,7 +13,6 @@ import paymentRoutes from "./routes/PaymentRoute";
 import { handlePaystackWebhook } from "./controllers/webhookController";
 
 dotenv.config();
-  console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
 
 
@@ -21,12 +20,11 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // CORS
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:3000",
-  "https://ecommerce-platform-eight.vercel.app",
-  "https://ecommerce-platform-jkg6.onrender.com",
-];
+// Comma-separated list in server/.env, e.g. CORS_ORIGINS=http://localhost:5173,https://your-site.com
+const allowedOrigins = (process.env.CORS_ORIGINS ?? "http://localhost:5173")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
 
 app.use(
   cors({

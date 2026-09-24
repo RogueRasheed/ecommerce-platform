@@ -21,15 +21,9 @@ export const initializePayment = async (req: Request, res: Response) => {
       amount: amount * 100, // convert Naira to kobo
       // Creates the unique reference that includes the MongoDB Order ID
       reference: `ORD-${orderId}-${Date.now()}`,
-      callback_url: `https://ecommerce-platform-eight.vercel.app/orders/${orderId}/status`,
+      callback_url: `${process.env.CLIENT_URL}/orders/${orderId}/status`,
       metadata: { name, phone },
     };
-
-    console.log("ENV DEBUG:", {
-  SECRET: secretkey ? "Loaded" : "MISSING",
-  KEY_START: secretkey?.substring(0, 5)
-});
-
 
     const response = await axios.post(
       "https://api.paystack.co/transaction/initialize",

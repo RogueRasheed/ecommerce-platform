@@ -25,6 +25,9 @@ server/.vite/
 # Environment variables 
 *.env
 *.env.*
+# ...but keep the templates
+!.env.example
+!**/.env.example
 *.vite-end.d.ts
 vite-env.d.ts
 

@@ -1,4 +1,6 @@
-const BASE_URL = "http://localhost:3000/admin"; // change to your backend URL
+import { API_BASE_URL } from "../../config";
+
+const BASE_URL = `${API_BASE_URL}/admin`;
 
 export const getDashboardStats = async () => {
   const token = localStorage.getItem("adminToken"); // or wherever you store token

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_BASE_URL } from "../config";
 
 type OrderItem = {
   productId: string;
@@ -46,7 +47,7 @@ export default function OrderLookup() {
         : `phone=${encodeURIComponent(input)}`;
 
       const res = await fetch(
-        `https://ecommerce-platform-jkg6.onrender.com/api/orders/lookup/customer?${queryParam}`
+        `${API_BASE_URL}/orders/lookup/customer?${queryParam}`
       );
 
       if (!res.ok) throw new Error("No orders found for this input");

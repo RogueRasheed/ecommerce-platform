@@ -106,9 +106,15 @@ export const useCart = create<CartState>()(
               (item) => item.variantId === variantId && !isTempId(item.id)
             );
 
+            // The optimistic step above already bumped the on-screen quantity,
+            // so the local quantity IS the target. Adding +1 here would count
+            // the click twice.
+            const localQty =
+              get().cart.find((item) => item.variantId === variantId)?.quantity ?? 1;
+
             const updated = serverItem
-              ? await updateLineItem(cartId, serverItem.id, serverItem.quantity + 1)
-              : await addLineItem(cartId, variantId, 1);
+              ? await updateLineItem(cartId, serverItem.id, serverItem.quantity)
+              : await addLineItem(cartId, variantId, localQty);
 
             set({ cart: updated.items });
           } catch (err) {
