@@ -39,8 +39,21 @@ declare module "@paystack/inline-js" {
     onError?: (error: PaystackError) => void;
   }
 
+  /**
+   * Config for resuming a transaction Medusa already created via the
+   * medusa-payment-paystack provider (we only pass the access code + callbacks).
+   */
+  export interface PaystackResumeConfig {
+    accessCode: string;
+    onSuccess?: (data: PaystackSuccessData) => void;
+    onCancel?: () => void;
+    onLoad?: (data: Record<string, unknown>) => void;
+    onError?: (error: PaystackError) => void;
+  }
+
   export default class Paystack {
     constructor();
     newTransaction(config: PaystackTransactionConfig): void;
+    resumeTransaction(accessCode: string, config?: Omit<PaystackResumeConfig, "accessCode">): void;
   }
 }

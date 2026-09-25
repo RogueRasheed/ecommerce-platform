@@ -26,8 +26,11 @@ export default function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/products/:id" element={<ProductDetails />} />
-        <Route path="/orders/:id/status" element={<OrderStatus />} />
-        <Route path="/orders/:id" element={<OrderDetails />} />
+        <Route path="/orders/:id" element={<OrderStatus />} />
+        {/* Legacy Mongo order-details route — no longer reachable now that
+            checkout navigates to /orders/:id (Medusa). Left here only until
+            OrderLookup (still on the legacy API) is migrated too. */}
+        <Route path="/orders/legacy/:id" element={<OrderDetails />} />
         <Route path="/lookup-order" element={<OrderLookup />} />
         <Route
           path="/admin" element={

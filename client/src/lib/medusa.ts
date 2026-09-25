@@ -184,3 +184,113 @@ export async function deleteLineItem(
 ): Promise<void> {
   await medusa.store.cart.deleteLineItem(cartId, lineItemId);
 }
+
+// ---- Checkout: shipping address + email ----
+
+export type ShippingAddressInput = {
+  first_name: string;
+  last_name: string;
+  address_1: string;
+  city: string;
+  phone?: string;
+  country_code: string; // Medusa wants a 2-letter code, e.g. "ng"
+};
+
+export async function setCartCheckoutInfo(
+  cartId: string,
+  email: string,
+  address: ShippingAddressInput
+): Promise<MedusaCartSummary> {
+  const { cart } = await medusa.store.cart.update(cartId, {
+    email,
+    shipping_address: address,
+  });
+  return mapCart(cart);
+}
+
+// ---- Checkout: shipping method ----
+
+export type ShippingOption = {
+  id: string;
+  name: string;
+  amount: number; // Naira, whole units
+};
+
+export async function listShippingOptions(cartId: string): Promise<ShippingOption[]> {
+  const { shipping_options } = await medusa.store.fulfillment.listCartOptions({
+    cart_id: cartId,
+  });
+  return (shipping_options as { id: string; name: string; amount?: number; calculated_price?: { calculated_amount: number } }[]).map(
+    (o) => ({
+      id: o.id,
+      name: o.name,
+      amount: o.calculated_price?.calculated_amount ?? o.amount ?? 0,
+    })
+  );
+}
+
+export async function addShippingMethod(
+  cartId: string,
+  optionId: string
+): Promise<MedusaCartSummary> {
+  const { cart } = await medusa.store.cart.addShippingMethod(cartId, {
+    option_id: optionId,
+  });
+  return mapCart(cart);
+}
+
+// ---- Checkout: payment ----
+
+// Paystack requires the customer's email in the session data (see plugin docs).
+// The plugin puts an access code back in the session's data, which the
+// storefront uses to resume the Paystack Inline popup.
+export async function initiatePaystackSession(
+  cart: { id: string },
+  email: string
+): Promise<{ accessCode: string; authorizationUrl?: string }> {
+  const { payment_collection } = await medusa.store.payment.initiatePaymentSession(
+    // The SDK only reads `.id` off this, but its type wants a full StoreCart —
+    // safe to widen here since we never use the other fields.
+    cart as never,
+    {
+      provider_id: "pp_paystack",
+      data: { email },
+    }
+  );
+
+  const session = payment_collection.payment_sessions?.find(
+    (s: { provider_id: string }) => s.provider_id === "pp_paystack"
+  );
+  const data = (session?.data ?? {}) as {
+    paystackTxAccessCode?: string;
+    paystackTxAuthorizationUrl?: string;
+  };
+
+  if (!data.paystackTxAccessCode) {
+    throw new Error("Paystack did not return an access code. Check that Paystack is enabled on this region.");
+  }
+
+  return {
+    accessCode: data.paystackTxAccessCode,
+    authorizationUrl: data.paystackTxAuthorizationUrl,
+  };
+}
+
+// ---- Checkout: complete ----
+
+export type CompletedOrder = {
+  id: string;
+  display_id: number;
+};
+
+// Returns the created order on success, or throws with Medusa's error message
+// if the cart couldn't be completed (e.g. payment not actually captured yet).
+export async function completeCart(cartId: string): Promise<CompletedOrder> {
+  const result = await medusa.store.cart.complete(cartId);
+
+  if (result.type === "cart") {
+    throw new Error(result.error?.message ?? "Could not complete the order.");
+  }
+
+  return { id: result.order.id, display_id: result.order.display_id };
+}

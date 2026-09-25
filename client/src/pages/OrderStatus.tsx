@@ -1,133 +1,96 @@
-import { useEffect, useState, useCallback } from "react";
-import { useParams, Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
 import Loader from "../components/Loader";
-import toast from "react-hot-toast";
-import { API_BASE_URL } from "../config";
+import { medusa } from "../lib/medusa";
 
-interface OrderItem {
-  productId: string;
-  name: string;
-  price: number;
-  qty: number;
-}
+// Minimal shape of what we read off a Medusa order — Medusa's real type is
+// much bigger, we only need these fields for the confirmation page.
+type MedusaOrderItem = {
+  id: string;
+  title: string;
+  quantity: number;
+  unit_price: number;
+};
 
-interface Order {
-  _id: string;
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
-  customerAddress: string;
-  items: OrderItem[];
+type MedusaOrder = {
+  id: string;
+  display_id: number;
+  email: string;
+  items?: MedusaOrderItem[];
   total: number;
-  status: "processing" | "successful" | "failed" | "delivered" | "cancelled" | "shipped" | "pending";
-  paymentReference?: string;
-}
+  shipping_address?: { address_1: string; city: string } | null;
+};
 
 export default function OrderStatusPage() {
   const { id } = useParams<{ id: string }>();
-  const location = useLocation();
-  const [order, setOrder] = useState<Order | null>(null);
+  const [order, setOrder] = useState<MedusaOrder | null>(null);
   const [loading, setLoading] = useState(true);
-  const [verificationStatus, setVerificationStatus] = useState<'IDLE' | 'VERIFYING' | 'VERIFIED' | 'FAILED'>('IDLE');
-
-  const fetchOrder = useCallback(async () => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/orders/${id}`);
-      if (!res.ok) throw new Error("Failed to fetch order");
-      const data: Order = await res.json();
-      setOrder(data);
-      return data;
-    } catch (err) {
-      console.error("❌ Error fetching order:", err);
-      return null;
-    }
-  }, [id]);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const paystackRef = params.get('trxref');
+    if (!id) return;
+    medusa.store.order
+      .retrieve(id, { fields: "*items,*shipping_address" })
+      .then(({ order }) => setOrder(order as unknown as MedusaOrder))
+      .catch((err) => {
+        console.error("Failed to fetch order:", err);
+        setNotFound(true);
+      })
+      .finally(() => setLoading(false));
+  }, [id]);
 
-    const handleVerification = async (reference: string) => {
-      setVerificationStatus('VERIFYING');
-      try {
-        const verifyRes = await fetch(`${API_BASE_URL}/payments/verify/${reference}`);
-        const verifyData = await verifyRes.json();
+  if (loading) return <Loader message="Loading your order..." />;
 
-        if (!verifyRes.ok) {
-          toast.error(verifyData.error || "❌ Payment verification failed.");
-          setVerificationStatus('FAILED');
-        } else {
-          toast.success(`🎉 Payment verified!`);
-          setVerificationStatus('VERIFIED');
-        }
-      } catch (err) {
-        console.error("❌ Error during verification:", err);
-        toast.error("❌ Error communicating with the payment server.");
-        setVerificationStatus('FAILED');
-      }
-
-      await fetchOrder();
-      setLoading(false);
-    };
-
-    if (paystackRef) {
-      handleVerification(paystackRef);
-    } else {
-      fetchOrder().then(() => setLoading(false));
-    }
-  }, [id, location.search, fetchOrder]);
-
-  if (loading || verificationStatus === 'VERIFYING')
-    return <Loader message={verificationStatus === 'VERIFYING' ? 'Verifying payment...' : 'Loading order...'} />;
-
-  if (!order) return <p className="text-center mt-10 text-gray-600">Order not found.</p>;
-
-  const statusColor =
-    order.status === "successful"
-      ? "text-green-600"
-      : order.status === "failed"
-      ? "text-red-600"
-      : order.status === "delivered"
-      ? "text-blue-600"
-      : "text-yellow-600";
-
-  const statusEmoji =
-    order.status === "successful"
-      ? "🎉"
-      : order.status === "failed"
-      ? "❌"
-      : order.status === "delivered"
-      ? "🚚"
-      : "⏳";
+  if (notFound || !order) {
+    return (
+      <div className="max-w-xl mx-auto px-6 py-16 text-center">
+        <h1 className="text-2xl font-bold mb-4">Order not found</h1>
+        <p className="text-gray-600">
+          We couldn't find that order. If you just paid, check your email for a receipt, or contact us.
+        </p>
+        <Link to="/" className="mt-6 inline-block px-6 py-2 bg-[#009632] text-white rounded-lg shadow hover:bg-[#007a29]">
+          Back to Store
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-16 px-6">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8 relative overflow-hidden">
-        {verificationStatus === 'FAILED' && order.status !== 'successful' && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6" role="alert">
-            <p className="font-bold">Verification Warning</p>
-            <p className="text-sm">We could not confirm the payment. Please check your order status below.</p>
-          </div>
-        )}
-
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8">
         <div className="text-center border-b pb-6 mb-6">
-          <h1 className={`text-3xl font-bold mb-2 ${statusColor}`}>
-            Order {order.status.charAt(0).toUpperCase() + order.status.slice(1)} {statusEmoji}
-          </h1>
-          <p className="text-gray-600">Order ID: <span className="font-medium">{order._id}</span></p>
-          {order.paymentReference && (
-            <p className="text-sm text-gray-500 mt-1">Paystack Ref: {order.paymentReference}</p>
-          )}
-          <p className="text-sm text-gray-500 mt-1">Thank you for shopping with us!</p>
+          <h1 className="text-3xl font-bold mb-2 text-green-600">Order confirmed 🎉</h1>
+          <p className="text-gray-600">
+            Order <span className="font-medium">#{order.display_id}</span>
+          </p>
+          <p className="text-sm text-gray-500 mt-1">A confirmation has been sent to {order.email}.</p>
         </div>
 
-        {/* Customer Info, Items List, Progress/Status Message JSX omitted for brevity */}
+        <div className="divide-y mb-6">
+          {order.items?.map((item) => (
+            <div key={item.id} className="flex items-center justify-between py-3">
+              <div>
+                <p className="font-medium">{item.title}</p>
+                <p className="text-sm text-gray-500">Qty {item.quantity}</p>
+              </div>
+              <p className="font-semibold">₦{(item.unit_price * item.quantity).toLocaleString()}</p>
+            </div>
+          ))}
+        </div>
 
-        <div className="text-center mt-10">
-          <Link
-            to="/"
-            className="px-6 py-2 bg-[#009632] text-white rounded-lg shadow hover:bg-[#007a29] transition-all"
-          >
+        {order.shipping_address && (
+          <p className="text-sm text-gray-500 mb-6">
+            Delivering to {order.shipping_address.address_1}, {order.shipping_address.city}
+          </p>
+        )}
+
+        <div className="flex justify-between text-lg font-bold border-t pt-4 mb-8">
+          <span>Total paid</span>
+          <span>₦{order.total.toLocaleString()}</span>
+        </div>
+
+        <div className="text-center">
+          <Link to="/" className="px-6 py-2 bg-[#009632] text-white rounded-lg shadow hover:bg-[#007a29] transition-all">
             Back to Store
           </Link>
         </div>
