@@ -24,6 +24,7 @@ type CartState = {
   increaseQuantity: (lineItemId: string) => Promise<void>;
   decreaseQuantity: (lineItemId: string) => Promise<void>;
   clearCart: () => Promise<void>;
+  resetAfterOrder: () => void;
 };
 
 function isStaleReferenceError(err: unknown): boolean {
@@ -229,6 +230,9 @@ export const useCart = create<CartState>()(
             // Already gone server-side, or about to be — fine either way.
           }
         });
+      },
+            resetAfterOrder: () => {
+        set({ cart: [], cartId: null });
       },
     }),
     {

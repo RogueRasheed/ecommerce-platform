@@ -144,14 +144,25 @@ function mapCart(cart: MedusaCartResponse): MedusaCartSummary {
   };
 }
 
+// Medusa doesn't include total fields (subtotal, shipping_total, total) in a
+// cart response by default — they have to be requested explicitly, or they
+// silently come back as undefined/0. Every call below that returns a cart
+// passes this so mapCart always gets real numbers.
+const CART_TOTAL_FIELDS = "+item_subtotal,+shipping_total,+total";
+
 export async function createCart(): Promise<MedusaCartSummary> {
   const region_id = await getRegionId();
-  const { cart } = await medusa.store.cart.create({ region_id });
+  const { cart } = await medusa.store.cart.create(
+    { region_id },
+    { fields: CART_TOTAL_FIELDS }
+  );
   return mapCart(cart);
 }
 
 export async function retrieveCart(cartId: string): Promise<MedusaCartSummary> {
-  const { cart } = await medusa.store.cart.retrieve(cartId);
+  const { cart } = await medusa.store.cart.retrieve(cartId, {
+    fields: CART_TOTAL_FIELDS,
+  });
   return mapCart(cart);
 }
 
@@ -160,10 +171,11 @@ export async function addLineItem(
   variantId: string,
   quantity: number
 ): Promise<MedusaCartSummary> {
-  const { cart } = await medusa.store.cart.createLineItem(cartId, {
-    variant_id: variantId,
-    quantity,
-  });
+  const { cart } = await medusa.store.cart.createLineItem(
+    cartId,
+    { variant_id: variantId, quantity },
+    { fields: CART_TOTAL_FIELDS }
+  );
   return mapCart(cart);
 }
 
@@ -172,9 +184,12 @@ export async function updateLineItem(
   lineItemId: string,
   quantity: number
 ): Promise<MedusaCartSummary> {
-  const { cart } = await medusa.store.cart.updateLineItem(cartId, lineItemId, {
-    quantity,
-  });
+  const { cart } = await medusa.store.cart.updateLineItem(
+    cartId,
+    lineItemId,
+    { quantity },
+    { fields: CART_TOTAL_FIELDS }
+  );
   return mapCart(cart);
 }
 
@@ -201,10 +216,11 @@ export async function setCartCheckoutInfo(
   email: string,
   address: ShippingAddressInput
 ): Promise<MedusaCartSummary> {
-  const { cart } = await medusa.store.cart.update(cartId, {
-    email,
-    shipping_address: address,
-  });
+  const { cart } = await medusa.store.cart.update(
+    cartId,
+    { email, shipping_address: address },
+    { fields: CART_TOTAL_FIELDS }
+  );
   return mapCart(cart);
 }
 
@@ -233,9 +249,11 @@ export async function addShippingMethod(
   cartId: string,
   optionId: string
 ): Promise<MedusaCartSummary> {
-  const { cart } = await medusa.store.cart.addShippingMethod(cartId, {
-    option_id: optionId,
-  });
+  const { cart } = await medusa.store.cart.addShippingMethod(
+    cartId,
+    { option_id: optionId },
+    { fields: CART_TOTAL_FIELDS }
+  );
   return mapCart(cart);
 }
 
@@ -244,6 +262,14 @@ export async function addShippingMethod(
 // Paystack requires the customer's email in the session data (see plugin docs).
 // The plugin puts an access code back in the session's data, which the
 // storefront uses to resume the Paystack Inline popup.
+//
+// The provider_id below has to match exactly what your Medusa backend
+// registered it as. Medusa builds this from the plugin's resolve name plus
+// its own identifier, so it isn't always the short "pp_paystack" you'd
+// expect — check yours via the region's payment providers in DevTools'
+// Network tab if this ever stops matching.
+const PAYSTACK_PROVIDER_ID = "pp_paystack_paystack";
+
 export async function initiatePaystackSession(
   cart: { id: string },
   email: string
@@ -253,13 +279,13 @@ export async function initiatePaystackSession(
     // safe to widen here since we never use the other fields.
     cart as never,
     {
-      provider_id: "pp_paystack",
+      provider_id: PAYSTACK_PROVIDER_ID,
       data: { email },
     }
   );
 
   const session = payment_collection.payment_sessions?.find(
-    (s: { provider_id: string }) => s.provider_id === "pp_paystack"
+    (s: { provider_id: string }) => s.provider_id === PAYSTACK_PROVIDER_ID
   );
   const data = (session?.data ?? {}) as {
     paystackTxAccessCode?: string;
