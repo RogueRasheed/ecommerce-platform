@@ -16,10 +16,14 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
     });
   }
 
-  console.log("Contact message received:", {
+  const contactMessageService = req.scope.resolve(
+    "contactMessage"
+  );
+
+  await contactMessageService.createContactMessages({
     name,
     email,
-    subject,
+    subject: subject || null,
     message,
   });
 
