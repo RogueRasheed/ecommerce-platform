@@ -7,14 +7,11 @@ import orderRoutes from "./routes/Orders";
 import productRoutes from "./routes/Products";
 import adminRoutes from "./routes/Admin";
 import authRoutes from "./routes/AuthRoutes";
-import messageRoutes from "./routes/messageRoutes";
 import paymentRoutes from "./routes/PaymentRoute";
 
 import { handlePaystackWebhook } from "./controllers/webhookController";
 
 dotenv.config();
-
-
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -42,17 +39,15 @@ mongoose
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ MongoDB error:", err));
 
-  
-  // 3️⃣ Webhook (RAW body) 
-  app.post(
-    "/api/paystack/webhook",
-    express.raw({ type: "application/json" }),
-    handlePaystackWebhook
-  );
+// 3️⃣ Webhook (RAW body)
+app.post(
+  "/api/paystack/webhook",
+  express.raw({ type: "application/json" }),
+  handlePaystackWebhook
+);
 
-  // 1️⃣ Global JSON parser (must be before all normal routes)
-  app.use(express.json());
-
+// 1️⃣ Global JSON parser (must be before all normal routes)
+app.use(express.json());
 
 // 2️⃣ Normal API routes
 app.use("/api/payments", paymentRoutes);
@@ -60,8 +55,6 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/message", messageRoutes);
-
 
 app.listen(port, () => {
   console.log(`API running at http://localhost:${port}`);
