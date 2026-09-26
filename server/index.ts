@@ -5,8 +5,6 @@ import mongoose from "mongoose";
 
 import orderRoutes from "./routes/Orders";
 import productRoutes from "./routes/Products";
-import adminRoutes from "./routes/Admin";
-import authRoutes from "./routes/AuthRoutes";
 import paymentRoutes from "./routes/PaymentRoute";
 
 import { handlePaystackWebhook } from "./controllers/webhookController";
@@ -53,8 +51,6 @@ app.use(express.json());
 app.use("/api/payments", paymentRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/products", productRoutes);
-app.use("/api/admin", adminRoutes);
-app.use("/api/auth", authRoutes);
 
 app.listen(port, () => {
   console.log(`API running at http://localhost:${port}`);
