@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { medusa } from "../lib/medusa";
 
 type OrderItem = {
   id: string;
