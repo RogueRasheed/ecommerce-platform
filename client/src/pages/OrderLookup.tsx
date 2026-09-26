@@ -1,34 +1,32 @@
 import { useState } from "react";
-import { API_BASE_URL } from "../config";
+import { medusa } from "../lib/medusa";
 
 type OrderItem = {
-  productId: string;
-  name: string;
-  price: number;
-  qty: number;
+  id: string;
+  title: string;
+  unit_price: number;
+  quantity: number;
 };
 
 type OrderStatus =
-  | "processing"
-  | "successful"
-  | "failed"
-  | "delivered"
-  | "cancelled"
-  | "shipped";
+  | "pending"
+  | "completed"
+  | "archived"
+  | "canceled";
 
 type Order = {
-  _id: string;
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
+  id: string;
+  display_id: number;
+  email: string;
   total: number;
   status: OrderStatus;
-  createdAt: string;
+  created_at: string;
   items: OrderItem[];
 };
 
 export default function OrderLookup() {
-  const [input, setInput] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -41,19 +39,30 @@ export default function OrderLookup() {
     setOrders([]);
 
     try {
-      const isEmail = input.includes("@");
-      const queryParam = isEmail
-        ? `email=${encodeURIComponent(input)}`
-        : `phone=${encodeURIComponent(input)}`;
+      const params = new URLSearchParams({
+        email: email.trim(),
+        phone: phone.trim(),
+      });
+
+      const baseUrl = import.meta.env.VITE_MEDUSA_BACKEND_URL as string;
+      const publishableKey = import.meta.env.VITE_MEDUSA_PUBLISHABLE_KEY as string;
 
       const res = await fetch(
-        `${API_BASE_URL}/orders/lookup/customer?${queryParam}`
+        `${baseUrl}/store/orders/lookup?${params.toString()}`,
+        {
+          headers: {
+            "x-publishable-api-key": publishableKey,
+          },
+        }
       );
 
-      if (!res.ok) throw new Error("No orders found for this input");
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(body?.message ?? "No orders found for these details.");
+      }
 
-      const data: Order[] = await res.json();
-      setOrders(data);
+      const data: { orders: Order[] } = await res.json();
+      setOrders(data.orders);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -63,12 +72,10 @@ export default function OrderLookup() {
 
   const getStatusColor = (status: OrderStatus) => {
     const colors: Record<OrderStatus, string> = {
-      processing: "bg-yellow-100 text-yellow-700",
-      successful: "bg-green-100 text-green-700",
-      failed: "bg-red-100 text-red-700",
-      delivered: "bg-blue-100 text-blue-700",
-      cancelled: "bg-red-100 text-red-700",
-      shipped: "bg-blue-100 text-blue-700",
+      pending: "bg-yellow-100 text-yellow-700",
+      completed: "bg-green-100 text-green-700",
+      archived: "bg-blue-100 text-blue-700",
+      canceled: "bg-red-100 text-red-700",
     };
     return colors[status] || "bg-gray-100 text-gray-700";
   };
@@ -88,40 +95,54 @@ export default function OrderLookup() {
 
       <form
         onSubmit={handleLookup}
-        className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
+        className="max-w-xl mx-auto space-y-4 mb-8"
       >
         <input
-          type="text"
-          placeholder="Enter your email or phone number"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          className="w-full sm:w-2/3 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#009632] focus:outline-none"
+          type="email"
+          placeholder="Email used for your order"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#009632] focus:outline-none"
           required
         />
+
+        <input
+          type="tel"
+          placeholder="Phone number used for your order"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#009632] focus:outline-none"
+          required
+        />
+
         <button
           type="submit"
           disabled={loading}
-          className="px-6 py-2 bg-[#009632] text-white rounded-lg shadow hover:bg-[#00812b] disabled:opacity-60"
+          className="w-full px-6 py-2 bg-[#009632] text-white rounded-lg shadow hover:bg-[#00812b] disabled:opacity-60"
         >
-          {loading ? "Loading..." : "Lookup"}
+          {loading ? "Loading..." : "Lookup Orders"}
         </button>
       </form>
 
-      {error && <p className="text-center text-red-500 font-medium mb-4">{error}</p>}
+      {error && (
+        <p className="text-center text-red-500 font-medium mb-4">{error}</p>
+      )}
 
       {orders.length > 0 ? (
         <div className="space-y-6">
           {orders.map((order) => (
             <div
-              key={order._id}
+              key={order.id}
               className="bg-white border rounded-xl shadow-sm p-6 transition hover:shadow-md"
             >
               <div className="flex justify-between items-center border-b pb-3 mb-3">
                 <div>
                   <p className="font-semibold text-gray-800">
-                    Order #{order._id.slice(-6)}
+                    Order #{order.display_id}
                   </p>
-                  <p className="text-sm text-gray-500">{formatDate(order.createdAt)}</p>
+                  <p className="text-sm text-gray-500">
+                    {formatDate(order.created_at)}
+                  </p>
                 </div>
                 <span
                   className={`px-3 py-1 text-sm rounded-full font-medium ${getStatusColor(
@@ -138,26 +159,26 @@ export default function OrderLookup() {
                 </p>
                 <button
                   onClick={() =>
-                    setExpanded(expanded === order._id ? null : order._id)
+                    setExpanded(expanded === order.id ? null : order.id)
                   }
                   className="text-[#009632] font-medium hover:underline"
                 >
-                  {expanded === order._id ? "Hide Details" : "View Details"}
+                  {expanded === order.id ? "Hide Details" : "View Details"}
                 </button>
               </div>
 
-              {expanded === order._id && (
+              {expanded === order.id && (
                 <ul className="mt-4 space-y-2 text-gray-700 border-t pt-3">
-                  {order.items.map((item, idx) => (
+                  {order.items.map((item) => (
                     <li
-                      key={idx}
+                      key={item.id}
                       className="flex justify-between text-sm border-b py-1"
                     >
                       <span>
-                        {item.name} × {item.qty}
+                        {item.title} × {item.quantity}
                       </span>
                       <span className="font-medium">
-                        ₦{(item.price * item.qty).toFixed(2)}
+                        ₦{(item.unit_price * item.quantity).toLocaleString()}
                       </span>
                     </li>
                   ))}
@@ -170,7 +191,8 @@ export default function OrderLookup() {
         !loading &&
         !error && (
           <p className="text-center text-gray-600">
-            Enter your email or phone number to see your order details.
+            Enter the email and phone number used for your order to see your
+            previous orders.
           </p>
         )
       )}
