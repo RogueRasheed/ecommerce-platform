@@ -32,7 +32,7 @@ type Stage = "details" | "payment";
 const isError = (e: unknown): e is Error => e instanceof Error;
 
 const CheckoutPage: React.FC = () => {
-  const { cart, cartId, clearCart } = useCart();
+  const { cart, cartId, resetAfterOrder } = useCart();
   const navigate = useNavigate();
 
   const [stage, setStage] = useState<Stage>("details");
@@ -117,7 +117,9 @@ const CheckoutPage: React.FC = () => {
     if (!cartId) return;
     try {
       const order = await completeCart(cartId);
-      await clearCart();
+      // The cart is already completed by Medusa. Do not delete its line items
+      // one-by-one after completion; just reset the local persisted cart state.
+      resetAfterOrder();
       toast.success("Order placed!");
       navigate(`/orders/${order.id}`);
     } catch (err) {
