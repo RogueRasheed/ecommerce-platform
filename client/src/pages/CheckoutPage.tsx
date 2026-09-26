@@ -13,6 +13,7 @@ import {
   initiatePaystackSession,
   completeCart,
   type ShippingOption,
+  formatNaira,
 } from "../lib/medusa";
 
 interface AddressFormState {
@@ -157,7 +158,7 @@ const CheckoutPage: React.FC = () => {
                   <p className="font-medium">{item.name}</p>
                   <p className="text-sm text-gray-500">Qty {item.quantity}</p>
                 </div>
-                <p className="font-semibold">₦{(item.price * item.quantity).toLocaleString()}</p>
+                <p className="font-semibold">₦{formatNaira(item.price * item.quantity)}</p>
               </div>
             ))}
           </div>
@@ -165,15 +166,15 @@ const CheckoutPage: React.FC = () => {
           <div className="border-t mt-4 pt-4 space-y-1">
             <div className="flex justify-between text-gray-600">
               <span>Subtotal</span>
-              <span>₦{subtotal.toLocaleString()}</span>
+              <span>₦{formatNaira(subtotal)}</span>
             </div>
             <div className="flex justify-between text-gray-600">
               <span>Shipping</span>
-              <span>{shippingTotal > 0 ? `₦${shippingTotal.toLocaleString()}` : "—"}</span>
+              <span>{shippingTotal > 0 ? `₦${formatNaira(shippingTotal)}` : "—"}</span>
             </div>
             <div className="flex justify-between text-lg font-bold pt-2">
               <span>Total</span>
-              <span>₦{total.toLocaleString()}</span>
+              <span>₦{formatNaira(total)}</span>
             </div>
           </div>
         </div>
@@ -231,7 +232,7 @@ const CheckoutPage: React.FC = () => {
           <div className="bg-white p-6 rounded-xl shadow space-y-4">
             <h2 className="text-2xl font-semibold mb-4">Payment</h2>
             <p className="text-gray-600">
-              You're paying ₦{total.toLocaleString()} for {cart.length} item{cart.length === 1 ? "" : "s"}.
+              You're paying ₦{formatNaira(total)} for {cart.length} item{cart.length === 1 ? "" : "s"}.
             </p>
             <PaystackButton accessCode={accessCode} onSuccess={handlePaymentSuccess} />
             <button

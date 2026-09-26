@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "../store/useCart";
+import { formatNaira } from "../lib/medusa";
+
 
 type Product = {
   _id: string;
@@ -36,7 +38,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
         <div className="flex items-center justify-between mt-auto">
           <span className="text-[#009632] font-bold text-lg">
-            ₦{product.price}
+            ₦{formatNaira(product.price)}
           </span>
           <button
             onClick={() => addToCart(product)}

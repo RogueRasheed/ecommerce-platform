@@ -320,3 +320,9 @@ export async function completeCart(cartId: string): Promise<CompletedOrder> {
 
   return { id: result.order.id, display_id: result.order.display_id };
 }
+
+export const formatNaira = (amount: number) =>
+  new Intl.NumberFormat("en-NG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
